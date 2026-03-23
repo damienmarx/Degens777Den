@@ -1,0 +1,19 @@
+[Unit]
+Description=Degens777Den Casino Backend API
+After=network.target mongod.service
+Wants=mongod.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/Degens777Den/backend
+Environment="PATH=/home/ubuntu/Degens777Den/backend/venv/bin"
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/home/ubuntu/Degens777Den/backend/venv/bin/python server.py
+Restart=on-failure
+RestartSec=10s
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
