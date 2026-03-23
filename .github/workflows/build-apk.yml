@@ -38,6 +38,7 @@ jobs:
       env:
         REACT_APP_ENV: production
         REACT_APP_BACKEND_URL: https://kodakclout-prod.workers.dev
+        CI: false
 
     - name: Capacitor Sync
       run: |
@@ -48,9 +49,14 @@ jobs:
 
     - name: Build Debug APK
       run: |
-        cd frontend/android
-        chmod +x gradlew
-        ./gradlew assembleDebug
+        if [ -d "frontend/android" ]; then
+          cd frontend/android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+        else
+          echo "Android directory not found, Capacitor sync might have failed."
+          exit 1
+        fi
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
