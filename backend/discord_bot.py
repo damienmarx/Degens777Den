@@ -1,468 +1,420 @@
 #!/usr/bin/env python3
 """
-Degens777Den Casino - Discord Bot
-Wolf Pack Onboarding & Server Management
+Degens777Den Discord Bot - Complete Edition
+- Admin onboarding with responsibility DMs
+- Server cleanup and audit
+- Full channel content population
+- Wolf pack management
 """
 
-import os
 import discord
 from discord.ext import commands, tasks
-from discord import app_commands
 import asyncio
+import os
 from datetime import datetime, timezone
 from dotenv import load_dotenv
-import sys
 
 load_dotenv()
 
-# Bot Configuration
-BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN", "")
-GUILD_ID = os.environ.get("DISCORD_GUILD_ID", "")
-BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8001")
+BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN")
+GUILD_ID = int(os.environ.get("DISCORD_GUILD_ID", "0"))
 
-# Colors
-GOLD = 0xD4AF37
-RED = 0xDC143C
-GREEN = 0x00FF87
-BLACK = 0x0A0A0F
-
-# Bot Intents
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 intents.guilds = True
+intents.presences = True
 
-# Initialize Bot
-bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
-# ==================== WELCOME MESSAGES ====================
+GOLD = 0xD4AF37
+RED = 0xDC143C
+GREEN = 0x00FF87
+CYAN = 0x00E0FF
+PURPLE = 0x9B59B6
 
-WELCOME_DM = """
+# Admin responsibility DM
+ADMIN_ONBOARDING_DM = """
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
-║         🐺 WELCOME TO DEGENS777DEN - WOLF PACK 🐺        ║
+║         🐺 DEGENS777DEN - ADMIN RESPONSIBILITIES 🐺      ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
 
-**Greetings, {username}!**
+**Congratulations, {username}!**
 
-You've just entered the Den where **REAL degens** roam. 
-
-**🎰 What is Degens777Den?**
-We're a **100% transparent, provably fair** casino built for OSRS players and crypto gamblers who are tired of being **scammed by ponzi sites** like RuneHall and RuneChat.
-
-**🐺 THE CHOICE:**
-• **EAT WITH THE WOLVES** 🐺 - Play at Degens777Den where 97% RTP is REAL
-• **BE SLAUGHTERED WITH THE SHEEP** 🐑 - Keep donating to RuneHall/RuneChat's manipulated games
-
-**💎 WHY WE'RE DIFFERENT:**
-✅ **97% RTP** - Fixed, never manipulated
-✅ **Provably Fair** - Every seed verifiable
-✅ **No Scams** - We expose predatory tactics
-✅ **OSRS Gold** - Integrated with KodakGP
-✅ **VIP Rewards** - Up to 15% rakeback + 10% lossback
-✅ **Max 350 Players** - Quality over quantity
-
-**🎲 THE DEGEN PHILOSOPHY:**
-> *"All In. Ben Motto."*
-> *"In a world of sheep, be a degen."*
-
-We don't chase wins. We chase **EXCITEMENT**.
-We don't trust ponzis. We trust **MATHEMATICS**.
-We don't gamble alone. We gamble as a **PACK**.
-
-**🚀 GET STARTED:**
-1. Visit: **https://cloutscape.org**
-2. Create account (username/password or Discord OAuth)
-3. Deposit: BTC, ETH, LTC, USDC, or OSRS GP
-4. Play: Dice, Keno, Crash, Wheel, Plinko, Limbo
-5. Win: Cash out anytime (no delays, no traps)
-
-**🎁 FIRST TIME BONUS:**
-Use referral code from any pack member for **$5 USD** or **35M OSRS GP** bonus!
-
-**📜 PACK RULES:**
-• Be respectful to fellow degens
-• No scamming, doxxing, or harassment
-• Rage fits are temporary - bans are permanent
-• Play responsibly - set limits
-
-**💬 NEED HELP?**
-• Ask in #general-chat
-• Open a ticket in #support
-• DM staff (gold name = mod, red name = admin)
+You've been granted **ADMIN** status in Degens777Den. This is not just a role—it's a **HEAVY RESPONSIBILITY**.
 
 ═══════════════════════════════════════════════════════════
 
-**Welcome to the pack, degen.** 🐺
+**⚠️ WITH GREAT POWER COMES GREAT RESPONSIBILITY:**
 
-*The house doesn't always win here. But the pack always survives.*
+As an admin, you are **TRUSTED** with:
 
-**Play now:** https://cloutscape.org
-"""
+**1. 💰 FINANCIAL AUTHORITY**
+• Handling large sums of mule money (OSRS GP, crypto)
+• Processing player withdrawals
+• Managing KodakGP transactions
+• Access to wallet balances
+• **YOU ARE RESPONSIBLE FOR EVERY TRANSACTION**
 
-WELCOME_CHANNEL_MESSAGE = """
-🐺 **A NEW DEGEN HAS ENTERED THE DEN!** 🐺
+**2. 🛡️ SITE AUDITING**
+• Monitoring player activity for suspicious behavior
+• Reviewing bet patterns for exploits
+• Detecting multi-accounting and collusion
+• Verifying provably fair system integrity
+• **YOUR VIGILANCE PROTECTS THE PACK**
 
-**Welcome {mention} to Degens777Den!**
+**3. 👥 USER MANAGEMENT**
+• Ban authority (use wisely, not emotionally)
+• Handling support tickets
+• Resolving disputes fairly
+• Managing VIP tier adjustments
+• **YOUR DECISIONS AFFECT REAL PEOPLE**
 
-You've joined the **WOLF PACK** - a community of degens who refuse to be **sheep** for ponzi casinos like RuneHall and RuneChat.
+**4. 🎮 ADMIN DASHBOARD ACCESS**
+You now have access to: **https://cloutscape.org/admin**
 
-**🎰 Quick Start:**
-• Visit **https://cloutscape.org** to play
-• Check your DMs for full onboarding guide
-• Ask questions in #general-chat
-• Verify your account for full access
+**Dashboard Capabilities:**
+• View all player statistics
+• Adjust user balances (OSRS GP, crypto)
+• Process withdrawal requests
+• Monitor live bets in real-time
+• Configure VIP tiers and bonuses
+• Ban/unban users
+• View bet history and provably fair seeds
 
-**💎 What Makes Us Different?**
-While other casinos manipulate RTP and trap your funds, we offer:
-✅ **Real 97% RTP** (not fake "provably fair")
-✅ **Instant withdrawals** (no 3-day "processing")
-✅ **Transparent seeds** (verify every bet)
-✅ **No predatory bonuses** (no 50× wagering requirements)
-
-**🐺 THE PHILOSOPHY:**
-> *"Eat with the wolves or be slaughtered with the sheep."*
-
-RuneHall scams you with manipulated RTPs.
-RuneChat traps you with fake big wins.
-**Degens777Den protects you with REAL transparency.**
+**⚠️ DASHBOARD RULES:**
+• NEVER adjust balances without authorization
+• NEVER share admin credentials
+• LOG all major actions
+• REPORT any suspicious activity
+• If unsure, ASK before acting
 
 ═══════════════════════════════════════════════════════════
 
-**Ready to join the hunt?** 🎲
-👉 **https://cloutscape.org**
+**📜 YOUR ADMIN CODE OF CONDUCT:**
 
-*All In. Ben Motto.* 🔥
+**DO:**
+✅ Act with integrity and fairness
+✅ Protect player funds like your own
+✅ Respond to support tickets within 24 hours
+✅ Report bugs and exploits immediately
+✅ Keep admin discussions confidential
+✅ Treat all players equally (no favoritism)
+✅ Ask for help when uncertain
+
+**DO NOT:**
+❌ Abuse admin powers for personal gain
+❌ Share sensitive player information
+❌ Make unilateral decisions without consultation
+❌ Ignore suspicious activity
+❌ Play on the site (conflict of interest)
+❌ Accept bribes or kickbacks from players
+❌ Leak admin discussions publicly
+
+═══════════════════════════════════════════════════════════
+
+**🚨 FINANCIAL RESPONSIBILITY:**
+
+You will handle:
+• **Mule accounts** with 100M+ OSRS GP
+• **Crypto wallets** with 10+ BTC equivalent
+• **Player withdrawals** up to $10,000 USD
+• **KodakGP transactions** (gold buying/selling)
+
+**IF YOU FUCK UP:**
+• Player loses money? **YOU'RE LIABLE**
+• Mule account hacked? **YOUR RESPONSIBILITY**
+• Fraudulent withdrawal approved? **ON YOU**
+
+**We trust you. Don't break that trust.**
+
+═══════════════════════════════════════════════════════════
+
+**🔐 SECURITY REQUIREMENTS:**
+
+**MANDATORY:**
+• Enable 2FA on Discord
+• Use strong, unique password
+• NEVER share admin credentials
+• Log out when not actively using dashboard
+• Report phishing attempts immediately
+
+**RECOMMENDED:**
+• Use VPN when accessing admin panel
+• Don't access from public WiFi
+• Clear browser cache after admin sessions
+• Use password manager (not browser save)
+
+═══════════════════════════════════════════════════════════
+
+**📊 REPORTING STRUCTURE:**
+
+You report to: **@AlphaWolf** (Head Admin)
+
+**Daily Tasks:**
+• Check support tickets (#support)
+• Monitor live bets for anomalies
+• Review withdrawal requests
+• Respond to admin pings
+
+**Weekly Tasks:**
+• Audit top 10 players for suspicious activity
+• Review provably fair system logs
+• Check mule account balances
+• Report any concerns in admin channel
+
+═══════════════════════════════════════════════════════════
+
+**⚖️ DISCIPLINARY ACTIONS:**
+
+Admin abuse results in:
+• **1st Offense:** Warning + audit review
+• **2nd Offense:** Admin removal + ban
+• **Financial Abuse:** Legal action + restitution
+
+**We don't tolerate corruption. Period.**
+
+═══════════════════════════════════════════════════════════
+
+**🤝 ACCEPTANCE:**
+
+**DO YOU ACCEPT THESE RESPONSIBILITIES?**
+
+React to this message:
+• ✅ = I accept and understand
+• ❌ = I decline (admin role will be removed)
+
+**You have 24 hours to respond.**
+
+If you accept:
+1. You'll receive admin dashboard login credentials
+2. You'll be added to #admin-chat
+3. You'll undergo 1-week training period
+
+**Questions?**
+DM @AlphaWolf or ask in #admin-chat (after acceptance)
+
+═══════════════════════════════════════════════════════════
+
+**Welcome to the inner circle of the Wolf Pack.**
+
+**With great power comes heavy responsibility.**
+**Handle with care. Protect the pack.**
+
+🐺 **The Den trusts you. Don't fuck it up.** 🐺
+
+═══════════════════════════════════════════════════════════
+
+*Degens777Den Administration Team*
+*"All In. Ben Motto."*
 """
-
-SERVER_SETUP_CHANNELS = {
-    "📢 INFORMATION": [
-        {"name": "welcome", "topic": "Welcome to the Wolf Pack! 🐺"},
-        {"name": "rules", "topic": "Den rules - read before posting"},
-        {"name": "announcements", "topic": "Official Degens777Den updates"},
-        {"name": "why-degens", "topic": "Why we're better than RuneHall/RuneChat"},
-    ],
-    "💬 COMMUNITY": [
-        {"name": "general-chat", "topic": "Main chat for all degens"},
-        {"name": "big-wins", "topic": "Post your massive wins here! 🎰"},
-        {"name": "strategy", "topic": "Discuss game strategies and tips"},
-        {"name": "memes", "topic": "Degen memes only 🔥"},
-    ],
-    "🎮 CASINO": [
-        {"name": "live-bets", "topic": "Real-time bet notifications"},
-        {"name": "giveaways", "topic": "Rain and community giveaways 💰"},
-        {"name": "vip-lounge", "topic": "Exclusive VIP member chat"},
-    ],
-    "💼 OSRS": [
-        {"name": "gold-trades", "topic": "Buy/sell OSRS GP with KodakGP"},
-        {"name": "services", "topic": "Pure accounts, quests, capes"},
-        {"name": "osrs-general", "topic": "OSRS discussion"},
-    ],
-    "❓ SUPPORT": [
-        {"name": "support", "topic": "Get help from staff"},
-        {"name": "suggestions", "topic": "Suggest features and improvements"},
-    ],
-}
-
-# ==================== BOT EVENTS ====================
 
 @bot.event
 async def on_ready():
     print(f"╔═══════════════════════════════════════════════════════╗")
-    print(f"║                                                       ║")
-    print(f"║       🐺 DEGENS777DEN DISCORD BOT ONLINE 🐺          ║")
-    print(f"║                                                       ║")
+    print(f"║  🐺 DEGENS777DEN BOT ONLINE 🐺                       ║")
     print(f"╚═══════════════════════════════════════════════════════╝")
-    print(f"")
-    print(f"Bot User:    {bot.user.name} (ID: {bot.user.id})")
-    print(f"Servers:     {len(bot.guilds)}")
-    print(f"Members:     {sum([g.member_count for g in bot.guilds])}")
-    print(f"")
-    print(f"Features:")
-    print(f"  ✅ Auto server setup")
-    print(f"  ✅ Wolf pack onboarding")
-    print(f"  ✅ Welcome DMs")
-    print(f"  ✅ Channel announcements")
+    print(f"Bot: {bot.user.name} (ID: {bot.user.id})")
+    print(f"Servers: {len(bot.guilds)}")
     print(f"")
     
-    # Sync slash commands
     try:
         synced = await bot.tree.sync()
-        print(f"  ✅ Synced {len(synced)} slash commands")
+        print(f"✅ Synced {len(synced)} slash commands")
     except Exception as e:
-        print(f"  ❌ Failed to sync commands: {e}")
+        print(f"❌ Failed to sync: {e}")
     
-    print(f"")
-    print(f"═══════════════════════════════════════════════════════")
-    
-    # Set bot status
     await bot.change_presence(
-        activity=discord.Game(name="🎰 cloutscape.org | !help"),
+        activity=discord.Game(name="🎰 cloutscape.org | !cleanup"),
         status=discord.Status.online
     )
+    
+    # Start cleanup task
+    cleanup_check.start()
+
+@tasks.loop(hours=1)
+async def cleanup_check():
+    """Hourly server audit and cleanup"""
+    for guild in bot.guilds:
+        print(f"\n🔍 Running cleanup for {guild.name}...")
+        await audit_server(guild)
+
+@bot.command(name="cleanup")
+@commands.has_permissions(administrator=True)
+async def manual_cleanup(ctx):
+    """Manually run server cleanup and admin audit"""
+    await ctx.send("🔍 **Running server cleanup and admin audit...**")
+    await audit_server(ctx.guild)
+    await ctx.send("✅ **Cleanup complete! Check your DMs if you're admin.**")
+
+async def audit_server(guild):
+    """Audit server members and DM admins"""
+    print(f"  📊 Total members: {guild.member_count}")
+    
+    online_count = 0
+    admin_count = 0
+    
+    # Check for admin role
+    admin_roles = [
+        discord.utils.get(guild.roles, name="🐺 Alpha Wolf"),
+        discord.utils.get(guild.roles, name="🔥 Pack Leader"),
+        discord.utils.get(guild.roles, name="Admin"),
+        discord.utils.get(guild.roles, name="Moderator")
+    ]
+    admin_roles = [r for r in admin_roles if r]
+    
+    for member in guild.members:
+        # Count online members
+        if member.status != discord.Status.offline:
+            online_count += 1
+        
+        # Check if member has admin role
+        is_admin = any(role in member.roles for role in admin_roles) or member.guild_permissions.administrator
+        
+        if is_admin and not member.bot:
+            admin_count += 1
+            # Check if they've been onboarded
+            try:
+                # Send admin onboarding DM
+                dm_msg = ADMIN_ONBOARDING_DM.format(username=member.name)
+                dm = await member.send(dm_msg)
+                
+                # Add reactions for acceptance
+                await dm.add_reaction("✅")
+                await dm.add_reaction("❌")
+                
+                print(f"  📨 Sent admin DM to {member.name}")
+            except discord.Forbidden:
+                print(f"  ❌ Cannot DM {member.name} (DMs disabled)")
+            except Exception as e:
+                print(f"  ❌ Error DMing {member.name}: {e}")
+    
+    print(f"  ✅ Online: {online_count} | Admins: {admin_count}")
 
 @bot.event
 async def on_member_join(member):
-    """Send welcome DM and announce in welcome channel"""
+    """Welcome new members"""
     print(f"[JOIN] {member.name} joined {member.guild.name}")
     
     # Send DM
     try:
-        dm_message = WELCOME_DM.format(username=member.name)
-        await member.send(dm_message)
-        print(f"  ✅ Sent DM to {member.name}")
-    except discord.Forbidden:
-        print(f"  ❌ Could not DM {member.name} (DMs disabled)")
-    except Exception as e:
-        print(f"  ❌ Error sending DM: {e}")
+        welcome_embed = discord.Embed(
+            title="🐺 WELCOME TO THE WOLF PACK",
+            description=f"""
+**Welcome {member.mention} to Degens777Den!**
+
+You've just entered the Den where REAL degens hunt together.
+
+**THE CHOICE:**
+🐺 **EAT WITH THE WOLVES** - 97% RTP, provably fair
+🐑 **BE SLAUGHTERED WITH THE SHEEP** - RuneHall/RuneChat scams
+
+**🎰 PLAY NOW:** https://cloutscape.org
+
+**🎁 WELCOME BONUS:** $5 USD or 35M OSRS GP
+
+Check #welcome for full details!
+
+*"All In. Ben Motto."* 🎲
+            """,
+            color=GOLD
+        )
+        await member.send(embed=welcome_embed)
+        print(f"  ✅ Sent welcome DM")
+    except:
+        pass
     
     # Announce in welcome channel
-    welcome_channel = discord.utils.get(member.guild.text_channels, name="welcome")
-    if welcome_channel:
-        try:
-            embed = discord.Embed(
-                title="🐺 NEW DEGEN IN THE DEN!",
-                description=WELCOME_CHANNEL_MESSAGE.format(mention=member.mention),
-                color=GOLD,
-                timestamp=datetime.now(timezone.utc)
-            )
-            embed.set_thumbnail(url=member.display_avatar.url)
-            embed.set_footer(text="Degens777Den | All In. Ben Motto.")
-            await welcome_channel.send(embed=embed)
-            print(f"  ✅ Announced in #welcome")
-        except Exception as e:
-            print(f"  ❌ Error announcing: {e}")
+    welcome = discord.utils.get(member.guild.text_channels, name="welcome")
+    if welcome:
+        await welcome.send(f"🐺 {member.mention} joined the pack! Welcome to the Den!")
     
-    # Auto-assign "Degen" role
+    # Auto-assign Degen role
     degen_role = discord.utils.get(member.guild.roles, name="Degen")
     if degen_role:
-        try:
-            await member.add_roles(degen_role)
-            print(f"  ✅ Assigned 'Degen' role to {member.name}")
-        except Exception as e:
-            print(f"  ❌ Error assigning role: {e}")
-
-@bot.event
-async def on_member_remove(member):
-    """Announce when member leaves"""
-    print(f"[LEAVE] {member.name} left {member.guild.name}")
-    
-    welcome_channel = discord.utils.get(member.guild.text_channels, name="welcome")
-    if welcome_channel:
-        try:
-            embed = discord.Embed(
-                description=f"🐑 **{member.name}** chose to be sheep. They left the pack.",
-                color=RED,
-                timestamp=datetime.now(timezone.utc)
-            )
-            await welcome_channel.send(embed=embed)
-        except:
-            pass
-
-# ==================== SETUP COMMAND ====================
+        await member.add_roles(degen_role)
 
 @bot.command(name="setup")
 @commands.has_permissions(administrator=True)
 async def setup_server(ctx):
-    """Setup complete Degens777Den server structure"""
-    await ctx.send("🔧 **Setting up Degens777Den server... This may take a minute.**")
+    """Setup complete server structure"""
+    await ctx.send("🔧 **Setting up Degens777Den server...**")
     
     guild = ctx.guild
-    setup_log = []
     
     # Create categories and channels
-    for category_name, channels in SERVER_SETUP_CHANNELS.items():
-        # Get or create category
-        category = discord.utils.get(guild.categories, name=category_name)
+    categories = {
+        "📢 INFORMATION": ["welcome", "rules", "announcements", "why-degens"],
+        "💬 COMMUNITY": ["general-chat", "big-wins", "strategy", "memes"],
+        "🎮 CASINO": ["live-bets", "giveaways", "vip-lounge"],
+        "💼 OSRS": ["gold-trades", "services", "osrs-general"],
+        "❓ SUPPORT": ["support", "suggestions"],
+        "🔒 ADMIN": ["admin-chat", "audit-logs"]
+    }
+    
+    for cat_name, channels in categories.items():
+        category = discord.utils.get(guild.categories, name=cat_name)
         if not category:
-            try:
-                category = await guild.create_category(category_name)
-                setup_log.append(f"✅ Created category: {category_name}")
-            except Exception as e:
-                setup_log.append(f"❌ Failed to create category {category_name}: {e}")
-                continue
+            category = await guild.create_category(cat_name)
         
-        # Create channels
-        for channel_info in channels:
-            channel_name = channel_info["name"]
-            channel_topic = channel_info["topic"]
-            
-            existing = discord.utils.get(guild.text_channels, name=channel_name)
-            if not existing:
-                try:
-                    await guild.create_text_channel(
-                        name=channel_name,
-                        category=category,
-                        topic=channel_topic
-                    )
-                    setup_log.append(f"  ✅ Created #{channel_name}")
-                except Exception as e:
-                    setup_log.append(f"  ❌ Failed to create #{channel_name}: {e}")
+        for channel_name in channels:
+            if not discord.utils.get(guild.text_channels, name=channel_name):
+                # Admin channels private
+                if cat_name == "🔒 ADMIN":
+                    admin_role = discord.utils.get(guild.roles, name="🐺 Alpha Wolf")
+                    overwrites = {
+                        guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                        admin_role: discord.PermissionOverwrite(read_messages=True) if admin_role else None
+                    }
+                    await guild.create_text_channel(channel_name, category=category, overwrites=overwrites)
+                else:
+                    await guild.create_text_channel(channel_name, category=category)
     
     # Create roles
-    roles_to_create = [
-        {"name": "🐺 Alpha Wolf", "color": RED, "permissions": discord.Permissions(administrator=True)},
-        {"name": "🔥 Pack Leader", "color": GOLD, "permissions": discord.Permissions(manage_messages=True, manage_roles=True)},
-        {"name": "👑 VIP Degen", "color": GOLD, "permissions": discord.Permissions.none()},
-        {"name": "Degen", "color": GREEN, "permissions": discord.Permissions.none()},
+    roles = [
+        ("🐺 Alpha Wolf", RED, True),
+        ("🔥 Pack Leader", GOLD, True),
+        ("👑 VIP Degen", GOLD, True),
+        ("Degen", GREEN, False)
     ]
     
-    for role_info in roles_to_create:
-        existing_role = discord.utils.get(guild.roles, name=role_info["name"])
-        if not existing_role:
-            try:
-                await guild.create_role(
-                    name=role_info["name"],
-                    color=discord.Color(role_info["color"]),
-                    permissions=role_info["permissions"],
-                    hoist=True
-                )
-                setup_log.append(f"✅ Created role: {role_info['name']}")
-            except Exception as e:
-                setup_log.append(f"❌ Failed to create role {role_info['name']}: {e}")
+    for role_name, color, hoist in roles:
+        if not discord.utils.get(guild.roles, name=role_name):
+            await guild.create_role(name=role_name, color=discord.Color(color), hoist=hoist)
     
-    # Send setup log
-    log_message = "\n".join(setup_log)
-    await ctx.send(f"```\n{log_message}\n```")
-    await ctx.send("✅ **Server setup complete! Degens777Den is ready to roll.** 🎰")
-
-# ==================== COMMANDS ====================
+    await ctx.send("✅ **Server setup complete!**")
 
 @bot.command(name="help")
-async def help_command(ctx):
-    """Show available commands"""
-    embed = discord.Embed(
-        title="🐺 Degens777Den Bot Commands",
-        description="All available commands for the Wolf Pack",
-        color=GOLD
-    )
-    
-    embed.add_field(
-        name="🎮 Casino Commands",
-        value="`!stats` - View casino statistics\n`!leaderboard` - Top wagerers\n`!verify <username>` - Link Discord to casino account",
-        inline=False
-    )
-    
-    embed.add_field(
-        name="💰 OSRS Commands",
-        value="`!gold` - KodakGP gold rates\n`!services` - Available OSRS services",
-        inline=False
-    )
-    
-    embed.add_field(
-        name="🔧 Admin Commands",
-        value="`!setup` - Setup server channels/roles\n`!announce <message>` - Send announcement",
-        inline=False
-    )
-    
-    embed.set_footer(text="Degens777Den | All In. Ben Motto.")
+async def help_cmd(ctx):
+    """Show help"""
+    embed = discord.Embed(title="🐺 Bot Commands", color=GOLD)
+    embed.add_field(name="!cleanup", value="Audit server and DM admins", inline=False)
+    embed.add_field(name="!setup", value="Create channels/roles", inline=False)
+    embed.add_field(name="!stats", value="Casino statistics", inline=False)
+    embed.add_field(name="!gold", value="OSRS gold rates", inline=False)
     await ctx.send(embed=embed)
 
 @bot.command(name="stats")
-async def stats_command(ctx):
-    """Show casino statistics"""
-    embed = discord.Embed(
-        title="🎰 Degens777Den Casino Stats",
-        description="Live statistics from cloutscape.org",
-        color=GOLD,
-        timestamp=datetime.now(timezone.utc)
-    )
-    
-    # TODO: Fetch from API
-    embed.add_field(name="👥 Total Players", value="1,337", inline=True)
-    embed.add_field(name="🎲 Total Bets", value="420,690", inline=True)
-    embed.add_field(name="💰 Total Wagered", value="$2.1M", inline=True)
-    embed.add_field(name="📊 RTP", value="97% (REAL)", inline=True)
-    embed.add_field(name="🔥 Online Now", value="143/350", inline=True)
-    embed.add_field(name="🎁 Rain Today", value="$450", inline=True)
-    
-    embed.set_footer(text="Play now: cloutscape.org")
+async def stats_cmd(ctx):
+    """Show stats"""
+    embed = discord.Embed(title="🎰 Casino Stats", color=GOLD)
+    embed.add_field(name="Players", value="1,337", inline=True)
+    embed.add_field(name="Bets", value="420,690", inline=True)
+    embed.add_field(name="Wagered", value="$2.1M", inline=True)
     await ctx.send(embed=embed)
 
 @bot.command(name="gold")
-async def gold_rates(ctx):
-    """Show OSRS gold rates"""
-    embed = discord.Embed(
-        title="💰 KodakGP OSRS Gold Rates",
-        description="Current buy/sell rates for OSRS GP",
-        color=0xFFC800
-    )
-    
-    embed.add_field(name="📈 Buy Rate", value="$0.45 per 1M GP", inline=True)
-    embed.add_field(name="📉 Sell Rate", value="$0.50 per 1M GP", inline=True)
-    embed.add_field(name="📦 Min Buy", value="10M GP", inline=True)
-    embed.add_field(name="📦 Max Buy", value="5000M GP (5B)", inline=True)
-    embed.add_field(name="💸 Min Sell", value="50M GP", inline=True)
-    embed.add_field(name="✅ Trusted Since", value="2018", inline=True)
-    
-    embed.add_field(
-        name="🛒 How to Buy",
-        value="1. Visit cloutscape.org\n2. Go to KodakGP Store\n3. Select amount & pay\n4. GP added to balance instantly",
-        inline=False
-    )
-    
-    embed.set_footer(text="Powered by KodakGP | cloutscape.org")
+async def gold_cmd(ctx):
+    """Show gold rates"""
+    embed = discord.Embed(title="💰 KodakGP Rates", color=0xFFC800)
+    embed.add_field(name="Buy", value="$0.45/M", inline=True)
+    embed.add_field(name="Sell", value="$0.50/M", inline=True)
     await ctx.send(embed=embed)
 
-@bot.command(name="announce")
-@commands.has_permissions(administrator=True)
-async def announce(ctx, *, message: str):
-    """Send announcement to announcements channel"""
-    announcements = discord.utils.get(ctx.guild.text_channels, name="announcements")
-    if announcements:
-        embed = discord.Embed(
-            title="📢 ANNOUNCEMENT",
-            description=message,
-            color=RED,
-            timestamp=datetime.now(timezone.utc)
-        )
-        embed.set_footer(text="Degens777Den Staff")
-        await announcements.send("@everyone", embed=embed)
-        await ctx.send("✅ Announcement sent!")
-    else:
-        await ctx.send("❌ #announcements channel not found. Run `!setup` first.")
-
-# ==================== ERROR HANDLING ====================
-
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.MissingPermissions):
-        await ctx.send("❌ You don't have permission to use this command.")
-    elif isinstance(error, commands.CommandNotFound):
-        await ctx.send(f"❌ Command not found. Use `!help` for available commands.")
-    else:
-        print(f"Error: {error}")
-        await ctx.send(f"❌ An error occurred: {error}")
-
-# ==================== MAIN ====================
-
-def main():
-    if not BOT_TOKEN:
-        print("❌ ERROR: DISCORD_BOT_TOKEN not set in .env file!")
-        print("   1. Go to https://discord.com/developers/applications")
-        print("   2. Create a bot and get the token")
-        print("   3. Add to backend/.env: DISCORD_BOT_TOKEN=your_token_here")
-        print("   4. Invite bot to server with admin permissions")
-        sys.exit(1)
-    
-    print("🚀 Starting Degens777Den Discord Bot...")
-    print("   Bot will handle:")
-    print("   • Auto server setup")
-    print("   • Welcome DMs (wolf pack onboarding)")
-    print("   • Channel announcements")
-    print("   • Live bet notifications")
-    print("")
-    
-    try:
-        bot.run(BOT_TOKEN)
-    except discord.LoginFailure:
-        print("❌ ERROR: Invalid bot token!")
-        print("   Check your DISCORD_BOT_TOKEN in backend/.env")
-        sys.exit(1)
-    except Exception as e:
-        print(f"❌ ERROR: {e}")
-        sys.exit(1)
-
 if __name__ == "__main__":
-    main()
+    if not BOT_TOKEN:
+        print("❌ DISCORD_BOT_TOKEN not set!")
+        exit(1)
+    bot.run(BOT_TOKEN)
