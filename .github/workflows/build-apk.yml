@@ -2,8 +2,6 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
     branches: [ main ]
   workflow_dispatch:
 
@@ -18,74 +16,44 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: 'frontend/package-lock.json'
 
     - name: Setup Java
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
-      with:
-        api-levels: '33'
-        build-tools: '33.0.0'
 
     - name: Install frontend dependencies
-      run: cd frontend && npm install --legacy-peer-deps
+      run: |
+        cd frontend
+        npm install --legacy-peer-deps
 
     - name: Build frontend
-      run: cd frontend && npm run build
+      run: |
+        cd frontend
+        npm run build
       env:
         REACT_APP_ENV: production
         REACT_APP_BACKEND_URL: https://kodakclout-prod.workers.dev
 
-    - name: Install Capacitor CLI
-      run: npm install -g @capacitor/cli
+    - name: Capacitor Sync
+      run: |
+        cd frontend
+        npm install @capacitor/cli @capacitor/core @capacitor/android
+        npx cap add android || true
+        npx cap sync
 
-    - name: Add Android platform
-      run: cd frontend && npx cap add android
+    - name: Build Debug APK
+      run: |
+        cd frontend/android
+        chmod +x gradlew
+        ./gradlew assembleDebug
 
-    - name: Copy web assets
-      run: cd frontend && npx cap copy
-
-    - name: Build APK
-      run: cd frontend/android && ./gradlew assembleRelease
-      env:
-        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
-
-    - name: Sign APK
-      uses: r0adkll/sign-android-release@v1
-      id: sign_apk
-      with:
-        releaseDirectory: frontend/android/app/build/outputs/apk/release
-        signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-        alias: ${{ secrets.ANDROID_KEY_ALIAS }}
-        keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-        keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
-
-    - name: Upload APK to Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: ${{ steps.sign_apk.outputs.signedReleaseFile }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload APK as Artifact
+    - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
-        name: degens777den-apk
-        path: ${{ steps.sign_apk.outputs.signedReleaseFile }}
-        retention-days: 30
-
-    - name: Notify Discord
-      if: always()
-      uses: sarisia/actions-status-discord@v1
-      with:
-        webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        status: ${{ job.status }}
-        title: "APK Build Status"
-        description: "Degens777Den Android APK build completed"
+        name: degens777den-debug-apk
+        path: frontend/android/app/build/outputs/apk/debug/app-debug.apk
