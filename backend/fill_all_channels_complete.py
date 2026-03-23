@@ -27,11 +27,11 @@ GREEN = 0x00FF87
 CYAN = 0x00E0FF
 
 # Image URLs
-IMG_WOLVES_VS_SHEEP = "https://customer-assets.emergentagent.com/job_kodakgp-gold/artifacts/3ofpicyx_image-6.jpg"
-IMG_LAUNCH_BONUS = "https://customer-assets.emergentagent.com/job_kodakgp-gold/artifacts/ibm4segp_image.jpg"
-IMG_CASINO_LUXURY = "https://customer-assets.emergentagent.com/job_kodakgp-gold/artifacts/grok_image_1772817690594.jpg"
-IMG_KODAKGP_GOLD = "https://customer-assets.emergentagent.com/job_kodakgp-gold/artifacts/xpqyx5j8_hero-background.jpg.png"
-IMG_PATTERN = "https://customer-assets.emergentagent.com/job_kodakgp-gold/artifacts/u38hgz3d_features-pattern.jpg.png"
+IMG_WOLVES_VS_SHEEP = ""
+IMG_LAUNCH_BONUS = ""
+IMG_CASINO_LUXURY = ""
+IMG_KODAKGP_GOLD = ""
+IMG_PATTERN = ""
 
 # Channel content - COMPLETE
 CHANNEL_CONTENT = {

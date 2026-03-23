@@ -85,7 +85,7 @@ A 100% transparent, provably fair casino built for OSRS players and crypto gambl
 *"In a world of sheep, be a degen."* 🐺
                 """,
                 "color": GOLD,
-                "image": "https://customer-assets.emergentagent.com/job_kodakgp-gold/artifacts/3ofpicyx_image-6.jpg"
+                "image": ""
             }
         ]
     },
@@ -300,7 +300,7 @@ ALL games are 100% provably fair with:
 **#AllIn #BenMotto #WolfPack**
                 """,
                 "color": RED,
-                "image": "https://customer-assets.emergentagent.com/job_kodakgp-gold/artifacts/ibm4segp_image.jpg"
+                "image": ""
             }
         ]
     },
@@ -604,7 +604,7 @@ First to hit it wins 100M OSRS GP!
 **ALL IN. BEN MOTTO.** 🎲
         """,
         "color": GOLD,
-        "image": "https://customer-assets.emergentagent.com/job_kodakgp-gold/artifacts/grok_image_1772817690594.jpg"
+        "image": ""
     },
     
     # Add more game guides... (continuing in next part due to length)
