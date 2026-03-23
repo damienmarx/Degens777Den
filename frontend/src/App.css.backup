@@ -23,7 +23,6 @@
   
   --font-display: 'Orbitron', monospace;
   --font-body: 'Outfit', sans-serif;
-  --font-brand: 'Orbitron', monospace;
   --font-mono: 'Space Mono', monospace;
   --font-brand: 'Orbitron', monospace;
   
