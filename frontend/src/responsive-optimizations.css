@@ -1,0 +1,602 @@
+/* ==================== RESPONSIVE & CROSS-PLATFORM OPTIMIZATIONS ==================== */
+/* This file contains all mobile-first, responsive, and platform-specific optimizations */
+
+/* ==================== MOBILE-FIRST BASE OVERRIDES ==================== */
+@media (max-width: 480px) {
+  :root {
+    --sidebar-width: 0;
+    --sidebar-collapsed: 0;
+    --header-height: 56px;
+    --chat-width: 0;
+  }
+
+  /* Hide sidebar on mobile */
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none !important;
+  }
+
+  .chat-panel {
+    display: none !important;
+  }
+
+  /* Optimize header for mobile */
+  .header {
+    padding: 8px 12px;
+    min-height: 56px;
+  }
+
+  .header-left, .header-right {
+    gap: 8px;
+  }
+
+  .balance-display {
+    gap: 8px;
+  }
+
+  .currency-selector {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .balance-amount {
+    font-size: 12px;
+  }
+
+  .deposit-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  /* Optimize page content padding */
+  .page-content {
+    padding: 12px;
+  }
+
+  /* Touch-friendly button sizing */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  input, select, textarea {
+    padding: 12px 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px;
+  }
+
+  /* Game page optimizations */
+  .game-container {
+    padding: 12px;
+  }
+
+  .game-controls {
+    gap: 8px;
+  }
+
+  .bet-input {
+    font-size: 16px;
+  }
+
+  .game-result {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  /* Reduce font sizes for mobile */
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  h3 {
+    font-size: 16px;
+  }
+
+  /* Modal/Dialog optimizations */
+  .modal-content {
+    max-width: 100%;
+    margin: 12px;
+    border-radius: 12px;
+  }
+
+  /* Form optimizations */
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+
+  /* Table optimizations for mobile */
+  .table-header,
+  .table-row {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  /* Disable hover effects on touch devices */
+  @media (hover: none) {
+    button:hover,
+    .nav-item:hover,
+    .currency-option:hover {
+      background: none;
+      transform: none;
+    }
+  }
+}
+
+/* ==================== TABLET OPTIMIZATIONS (481px - 768px) ==================== */
+@media (max-width: 768px) and (min-width: 481px) {
+  :root {
+    --sidebar-width: 0;
+    --chat-width: 0;
+  }
+
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none !important;
+  }
+
+  .chat-panel {
+    display: none !important;
+  }
+
+  .header {
+    padding: 12px 16px;
+  }
+
+  .page-content {
+    padding: 16px;
+  }
+
+  /* Tablet-friendly grid layouts */
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tiers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Optimize game controls for tablet */
+  .game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .control-group {
+    flex: 1;
+    min-width: 150px;
+  }
+}
+
+/* ==================== SMALL DESKTOP (769px - 1024px) ==================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --sidebar-width: 200px;
+    --sidebar-collapsed: 60px;
+  }
+
+  .sidebar {
+    width: var(--sidebar-width);
+  }
+
+  .page-content {
+    padding: 20px;
+  }
+
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==================== LARGE DESKTOP (1025px+) ==================== */
+@media (min-width: 1025px) {
+  .games-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .features-section {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ==================== TOUCH DEVICE OPTIMIZATIONS ==================== */
+@media (hover: none) and (pointer: coarse) {
+  /* Disable hover effects on touch devices */
+  button:hover,
+  .nav-item:hover,
+  .game-card:hover,
+  .currency-option:hover {
+    background: inherit;
+    transform: none;
+  }
+
+  /* Increase touch target sizes */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Add active state instead of hover */
+  button:active,
+  .nav-item:active,
+  .game-card:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+
+  /* Prevent double-tap zoom on buttons */
+  button {
+    touch-action: manipulation;
+  }
+
+  /* Optimize scrolling performance */
+  .sidebar-nav,
+  .page-content,
+  .chat-messages {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ==================== LANDSCAPE ORIENTATION (Mobile) ==================== */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root {
+    --header-height: 48px;
+  }
+
+  .header {
+    padding: 6px 12px;
+    min-height: 48px;
+  }
+
+  .page-content {
+    padding: 8px;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  h2 {
+    font-size: 14px;
+  }
+
+  /* Reduce game container height for landscape */
+  .game-container {
+    max-height: calc(100vh - 48px);
+  }
+}
+
+/* ==================== PORTRAIT ORIENTATION (Mobile) ==================== */
+@media (orientation: portrait) and (max-width: 480px) {
+  body {
+    overflow-y: auto;
+  }
+
+  .page-content {
+    overflow-y: auto;
+  }
+}
+
+/* ==================== PIXEL DENSITY OPTIMIZATIONS ==================== */
+/* High DPI screens (Retina, etc.) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Thinner borders for high DPI */
+  input, select, textarea,
+  .border-subtle {
+    border-width: 0.5px;
+  }
+
+  /* Optimize shadows for high DPI */
+  .glass-card,
+  .card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ==================== SAFE AREA INSETS (iOS Notch Support) ==================== */
+@supports (padding: max(0px)) {
+  .header {
+    padding-top: max(12px, env(safe-area-inset-top));
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  .page-content {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .chat-panel {
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* ==================== ANDROID-SPECIFIC OPTIMIZATIONS ==================== */
+/* Prevent text selection issues on Android */
+.game-container,
+.game-controls,
+button,
+.nav-item {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Fix input styling on Android */
+input, select, textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 8px;
+}
+
+/* Android keyboard optimization */
+input[type="number"] {
+  -webkit-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ==================== iOS-SPECIFIC OPTIMIZATIONS ==================== */
+/* Prevent iOS zoom on input focus */
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* Fix iOS button styling */
+button {
+  -webkit-appearance: none;
+  -webkit-border-radius: 8px;
+}
+
+/* Prevent iOS rubber band effect */
+body {
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+}
+
+/* iOS scroll performance */
+.page-content,
+.sidebar-nav,
+.chat-messages {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ==================== DESKTOP-SPECIFIC OPTIMIZATIONS ==================== */
+@media (min-width: 1025px) and (hover: hover) and (pointer: fine) {
+  /* Enable hover effects only on desktop with mouse */
+  button:hover {
+    transform: translateY(-2px);
+  }
+
+  .nav-item:hover {
+    background: var(--bg-elevated);
+  }
+
+  .game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(224, 255, 0, 0.2);
+  }
+
+  /* Cursor feedback */
+  button {
+    cursor: pointer;
+  }
+
+  .nav-item {
+    cursor: pointer;
+  }
+
+  /* Smooth transitions on desktop */
+  * {
+    transition: all 0.2s ease;
+  }
+}
+
+/* ==================== PERFORMANCE OPTIMIZATIONS ==================== */
+/* Reduce animations on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .coin-rain-container,
+  .gold-coin {
+    animation: none !important;
+  }
+}
+
+/* ==================== DARK MODE OPTIMIZATION ==================== */
+@media (prefers-color-scheme: dark) {
+  /* Already dark by default, but ensure consistency */
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  .sidebar,
+  .header,
+  .chat-panel,
+  .game-controls,
+  button {
+    display: none !important;
+  }
+
+  .page-content {
+    padding: 0;
+    background: white;
+    color: black;
+  }
+}
+
+/* ==================== ACCESSIBILITY OPTIMIZATIONS ==================== */
+/* Focus visible for keyboard navigation */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  :root {
+    --border-subtle: rgba(255, 255, 255, 0.2);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    border-width: 2px;
+  }
+}
+
+/* ==================== SMOOTH SCROLLING ==================== */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ==================== VIEWPORT FIT FOR NOTCHED DEVICES ==================== */
+@viewport {
+  viewport-fit: cover;
+}
+
+/* ==================== GAME-SPECIFIC RESPONSIVE ADJUSTMENTS ==================== */
+@media (max-width: 480px) {
+  /* Dice game */
+  .dice-display {
+    font-size: 48px;
+  }
+
+  /* Wheel game */
+  .wheel-container {
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  /* Plinko game */
+  .plinko-board {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Crash game */
+  .crash-chart {
+    max-width: 100%;
+    height: 200px;
+  }
+
+  /* Keno game */
+  .keno-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  /* Limbo game */
+  .limbo-display {
+    font-size: 36px;
+  }
+}
+
+/* ==================== ANIMATION PERFORMANCE ==================== */
+.gold-coin,
+.coin-rain-container {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize game animations */
+.game-result,
+.bet-result {
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+/* ==================== FLEX & GRID OPTIMIZATION ==================== */
+.games-grid,
+.features-section,
+.tiers-grid,
+.admin-stats-grid {
+  gap: clamp(8px, 2vw, 24px);
+}
+
+/* ==================== FONT SCALING ==================== */
+html {
+  font-size: clamp(14px, 2vw, 16px);
+}
+
+h1 {
+  font-size: clamp(24px, 5vw, 48px);
+}
+
+h2 {
+  font-size: clamp(18px, 4vw, 32px);
+}
+
+h3 {
+  font-size: clamp(16px, 3vw, 24px);
+}
+
+/* ==================== BUTTON SCALING ==================== */
+button {
+  padding: clamp(8px, 2vw, 16px) clamp(12px, 3vw, 24px);
+  font-size: clamp(12px, 2vw, 16px);
+}
+
+/* ==================== SPACING OPTIMIZATION ==================== */
+.page-content {
+  padding: clamp(12px, 3vw, 24px);
+}
+
+.game-container {
+  padding: clamp(12px, 2vw, 20px);
+}

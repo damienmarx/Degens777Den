@@ -2,22 +2,125 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        <meta name="theme-color" content="#050505" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
+        <meta name="theme-color" content="#E0FF00" />
         <meta name="description" content="Degens♧Den - The Ultimate Crypto Casino. Provably Fair Games, OSRS GP Trading, Wolf Pack Community." />
         <meta name="keywords" content="crypto casino, bitcoin gambling, osrs gold, provably fair, degens" />
+        
+        <!-- Apple Mobile Web App -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Degens" />
+        <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo-primary.svg" />
+        
+        <!-- PWA Manifest -->
+        <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+        
+        <!-- Favicon -->
+        <link rel="icon" href="%PUBLIC_URL%/logo-primary.svg" />
+        <link rel="shortcut icon" href="%PUBLIC_URL%/logo-primary.svg" />
+        
+        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        
+        <!-- Security Headers -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https:;" />
+        
+        <!-- Performance -->
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        <link rel="preload" href="%PUBLIC_URL%/logo-primary.svg" as="image" />
+        
+        <!-- Title -->
         <title>Degens♧Den | Crypto Casino & OSRS Trading</title>
+        
+        <!-- Prevent FOUC - Flash of Unstyled Content -->
         <style>
-            /* Prevent FOUC - Flash of Unstyled Content */
-            html { background: #050505; }
-            body { background: #050505; color: #fff; }
+            html { 
+                background: #050505; 
+                color-scheme: dark;
+            }
+            body { 
+                background: #050505; 
+                color: #fff;
+                margin: 0;
+                padding: 0;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            #root {
+                display: flex;
+                width: 100%;
+                height: 100vh;
+            }
+            /* Loading indicator */
+            .loading {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                background: #050505;
+            }
+            .loading::after {
+                content: '';
+                width: 40px;
+                height: 40px;
+                border: 3px solid #E0FF00;
+                border-top: 3px solid transparent;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
         </style>
     </head>
     <body>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id="root"></div>
+        <noscript>
+            <div style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #050505; color: #fff; font-family: sans-serif; text-align: center;">
+                <div>
+                    <h1>JavaScript Required</h1>
+                    <p>You need to enable JavaScript to run Degens♧Den.</p>
+                    <p>Please enable JavaScript in your browser settings and try again.</p>
+                </div>
+            </div>
+        </noscript>
+        <div id="root">
+            <div class="loading"></div>
+        </div>
+        
+        <!-- Service Worker Registration -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('%PUBLIC_URL%/service-worker.js')
+                        .then(registration => {
+                            console.log('Service Worker registered:', registration);
+                        })
+                        .catch(error => {
+                            console.log('Service Worker registration failed:', error);
+                        });
+                });
+            }
+            
+            // Prevent zoom on double-tap
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) {
+                    event.preventDefault();
+                }
+            }, { passive: false });
+            
+            // Prevent pinch zoom
+            document.addEventListener('wheel', function(event) {
+                if (event.ctrlKey) {
+                    event.preventDefault();
+                }
+            }, { passive: false });
+        </script>
     </body>
 </html>

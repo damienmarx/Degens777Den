@@ -1,5 +1,6 @@
 import { useState, useEffect, createContext, useContext, useRef, useCallback } from "react";
 import "@/App.css";
+import "@/responsive-optimizations.css";
 import "@/styles/blackjack-kodakgp.css";
 import { BrowserRouter, Routes, Route, Link, useNavigate, Navigate, useLocation } from "react-router-dom";
 import axios from "axios";

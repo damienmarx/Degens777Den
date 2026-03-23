@@ -1,0 +1,89 @@
+{
+  "name": "Degens777Den - Crypto Casino",
+  "short_name": "Degens",
+  "description": "The Ultimate Crypto Casino for OSRS Degens - Play Dice, Keno, Crash, Wheel, Plinko, Limbo",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#050505",
+  "theme_color": "#E0FF00",
+  "categories": ["games"],
+  "screenshots": [
+    {
+      "src": "/logo-primary.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/logo-primary.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/logo-primary.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-primary.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Play Dice",
+      "short_name": "Dice",
+      "description": "Play Dice game",
+      "url": "/dice",
+      "icons": [
+        {
+          "src": "/logo-primary.svg",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Play Crash",
+      "short_name": "Crash",
+      "description": "Play Crash game",
+      "url": "/crash",
+      "icons": [
+        {
+          "src": "/logo-primary.svg",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "View Wallet",
+      "short_name": "Wallet",
+      "description": "Check your balance",
+      "url": "/wallet",
+      "icons": [
+        {
+          "src": "/logo-primary.svg",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "prefer_related_applications": false
+}
