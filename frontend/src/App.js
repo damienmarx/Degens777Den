@@ -1,15 +1,17 @@
 import { useState, useEffect, createContext, useContext, useRef, useCallback } from "react";
 import "@/App.css";
+import "@/styles/blackjack-kodakgp.css";
 import { BrowserRouter, Routes, Route, Link, useNavigate, Navigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
-import {
-  Wallet, Menu, X, User, LogOut, Settings, MessageSquare, Send,
+import { Wallet, Menu, X, User, LogOut, Settings, MessageSquare, Send,
   ChevronRight, ChevronDown, Coins, Dices, Target, Trophy, Shield,
   Flame, Zap, Gift, TrendingUp, Clock, Users, Copy, Check, RefreshCw,
   Volume2, VolumeX, Eye, EyeOff, ArrowUp, ArrowDown, Circle, Play,
-  Pause, RotateCcw, Home, Rocket, Star, Crown, Diamond
+  Pause, RotateCcw, Home, Rocket, Star, Crown, Diamond, AlertCircle
 } from "lucide-react";
+import BlackjackGame from "./components/BlackjackGame";
+import KodakGPPro from "./components/KodakGPPro";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
