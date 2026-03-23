@@ -1,0 +1,56 @@
+<!-- Degens777Den Logo - Primary -->
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <radialGradient id="coinGradient" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Outer ring -->
+  <circle cx="100" cy="100" r="95" fill="none" stroke="url(#goldGradient)" stroke-width="3" filter="url(#glow)" opacity="0.6"/>
+  
+  <!-- Coin base -->
+  <circle cx="100" cy="100" r="80" fill="url(#coinGradient)" stroke="#B8860B" stroke-width="4"/>
+  
+  <!-- Inner circle detail -->
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.4"/>
+  
+  <!-- Center "7" -->
+  <text x="100" y="130" font-family="Anton, Impact, sans-serif" font-size="100" font-weight="900" 
+        text-anchor="middle" fill="#0A0A0F" filter="url(#glow)">7</text>
+  
+  <!-- Top "D7D" -->
+  <text x="100" y="50" font-family="'Orbitron', monospace" font-size="20" font-weight="700" 
+        text-anchor="middle" fill="#FFD700" letter-spacing="3">D7D</text>
+  
+  <!-- Bottom "7" small -->
+  <text x="100" y="175" font-family="Anton, sans-serif" font-size="24" font-weight="900" 
+        text-anchor="middle" fill="#FFD700">7</text>
+  
+  <!-- Accent sparkles -->
+  <circle cx="140" cy="60" r="3" fill="#FFD700" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="60" cy="140" r="3" fill="#FFD700" opacity="0.8">
+    <animate attributeName="opacity" values="1;0.8;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="150" cy="140" r="2" fill="#FFD700" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+</svg>

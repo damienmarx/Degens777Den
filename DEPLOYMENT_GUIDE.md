@@ -1,3 +1,26 @@
+# 🔥 DEGENS777DEN - COMPLETE DEPLOYMENT GUIDE
+
+**Domain**: cloutscape.org  
+**Casino**: Degens777Den  
+**Branding**: 7 D7D 7  
+**Theme**: Obsidian Luxury with Gold Lining  
+**Max Players**: 350 concurrent  
+
+---
+
+
+
+## 📚 ESSENTIAL DOCUMENTATION
+
+Before deployment, READ these critical documents:
+
+1. **[TERMS_OF_SERVICE.md](/app/TERMS_OF_SERVICE.md)** - Legal terms, user conduct, responsible gaming
+2. **[WHY_DEGENS777DEN.md](/app/WHY_DEGENS777DEN.md)** - Brand philosophy, transparency proof, competitor analysis
+3. **[ENV_VARIABLES_GUIDE.md](/app/ENV_VARIABLES_GUIDE.md)** - Complete environment configuration
+4. **[THEME_ENHANCEMENTS.md](/app/THEME_ENHANCEMENTS.md)** - UI/UX design system documentation
+
+---
+
 # Degens777Den - Phase 1 Complete! 🎰
 
 ## ✅ What's Included

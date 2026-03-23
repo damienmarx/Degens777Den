@@ -1,0 +1,28 @@
+<!-- Degens777Den Logo - Compact (for header/favicon) -->
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="compactGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="compactGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#0A0A0F" stroke="url(#compactGold)" stroke-width="2"/>
+  
+  <!-- Main "7" -->
+  <text x="32" y="45" font-family="Anton, Impact, sans-serif" font-size="42" font-weight="900" 
+        text-anchor="middle" fill="url(#compactGold)" filter="url(#compactGlow)">7</text>
+  
+  <!-- Small accent dots -->
+  <circle cx="18" cy="18" r="2" fill="#FFD700" opacity="0.8"/>
+  <circle cx="46" cy="46" r="2" fill="#FFD700" opacity="0.8"/>
+</svg>

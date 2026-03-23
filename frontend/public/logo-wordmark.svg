@@ -1,0 +1,44 @@
+<!-- Degens777Den Full Wordmark Logo -->
+<svg width="400" height="100" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wordmarkGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="wordGlow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <linearGradient id="redAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#DC143C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B0000;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- "DEGENS" -->
+  <text x="20" y="55" font-family="'Orbitron', 'Anton', sans-serif" font-size="48" font-weight="900" 
+        fill="url(#wordmarkGold)" filter="url(#wordGlow)" letter-spacing="2">DEGENS</text>
+  
+  <!-- "777" in red accent -->
+  <text x="260" y="55" font-family="Anton, Impact, sans-serif" font-size="52" font-weight="900" 
+        fill="url(#redAccent)" filter="url(#wordGlow)">777</text>
+  
+  <!-- "DEN" -->
+  <text x="340" y="55" font-family="'Orbitron', 'Anton', sans-serif" font-size="48" font-weight="900" 
+        fill="url(#wordmarkGold)" filter="url(#wordGlow)">DEN</text>
+  
+  <!-- Underline accent -->
+  <line x1="20" y1="70" x2="380" y2="70" stroke="url(#wordmarkGold)" stroke-width="2" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+  </line>
+  
+  <!-- Tagline -->
+  <text x="200" y="90" font-family="'Courier New', monospace" font-size="12" font-weight="400" 
+        text-anchor="middle" fill="#D4AF37" letter-spacing="3">ALL IN • BEN MOTTO</text>
+</svg>
