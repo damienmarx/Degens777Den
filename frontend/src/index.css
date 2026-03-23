@@ -828,6 +828,443 @@ body::before {
   border-bottom-color: #D4AF37;
 }
 
+
+
+/* ==================== MOBILE OPTIMIZATION (ANDROID/iOS) ==================== */
+
+/* Mobile-first approach: Base styles are mobile, desktop is enhancement */
+
+@media (max-width: 768px) {
+  /* Body & Layout */
+  body {
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Sidebar - Full screen overlay on mobile */
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    z-index: 9999;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.8);
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  /* Mobile overlay when sidebar open */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+  }
+
+  .sidebar.open + .sidebar-overlay {
+    display: block;
+  }
+
+  /* Header - Compact mobile */
+  .header {
+    height: 60px;
+    padding: 0 1rem;
+    flex-wrap: wrap;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+    background: none;
+    border: none;
+    color: var(--gold-primary);
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  /* Balance display - Stack on mobile */
+  .balance-display {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .currency-selector {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    width: 100%;
+  }
+
+  .balance-amount {
+    font-size: 1rem;
+  }
+
+  .deposit-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    width: 100%;
+  }
+
+  /* Main content - Full width */
+  .main-content {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .page-content {
+    padding: 1rem;
+  }
+
+  /* VIP Progress Bar - Mobile optimized */
+  .vip-progress-container {
+    padding: 1rem;
+  }
+
+  .vip-progress-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .vip-progress-bar {
+    height: 30px;
+  }
+
+  .vip-progress-text {
+    font-size: 0.875rem;
+  }
+
+  /* Stats Grid - Single column */
+  .stats-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  /* Admin Dashboard - Mobile friendly */
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .admin-actions {
+    grid-template-columns: 1fr;
+  }
+
+  /* Game Canvas - Full width, maintain aspect */
+  .game-canvas {
+    min-height: 300px;
+    border-radius: 0.5rem;
+  }
+
+  /* Buttons - Touch optimized */
+  .bet-button {
+    padding: 1.25rem;
+    font-size: 1.25rem;
+    min-height: 56px;
+    border-radius: 0.5rem;
+  }
+
+  /* Input fields - Touch optimized */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px; /* Prevents iOS zoom */
+    padding: 0.75rem;
+    min-height: 44px;
+  }
+
+  /* Chat Panel - Bottom sheet style */
+  .chat-panel {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    right: 0;
+    height: 60vh;
+    max-height: none;
+    width: 100%;
+    border-radius: 1rem 1rem 0 0;
+    transition: bottom 0.3s ease;
+  }
+
+  .chat-panel.open {
+    bottom: 0;
+  }
+
+  /* KodakGP Page - Mobile stack */
+  .kodakgp-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .rates-display {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .rate-box {
+    width: 100%;
+  }
+
+  .kodakgp-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .kodakgp-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .kodakgp-tabs button {
+    padding: 0.75rem 1.5rem;
+    white-space: nowrap;
+  }
+
+  /* Amount presets - Scroll horizontally */
+  .amount-presets {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    padding-bottom: 0.5rem;
+  }
+
+  .amount-presets button {
+    flex-shrink: 0;
+  }
+
+  /* Services list - Single column */
+  .services-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* Admin tables - Horizontal scroll */
+  .admin-users-table,
+  .admin-bets-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Modals - Full screen on mobile */
+  .modal {
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .modal-content {
+    height: 100%;
+    border-radius: 0;
+  }
+
+  /* Logo - Smaller on mobile */
+  .logo-text {
+    font-size: 1.25rem;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Tablet optimization */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar {
+    width: 240px;
+  }
+
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop optimization */
+@media (min-width: 1025px) {
+  .page-content {
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .game-canvas {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets */
+  button,
+  a,
+  .nav-item {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Remove hover effects, add active states */
+  .nav-item:hover {
+    background: none;
+  }
+
+  .nav-item:active {
+    background: rgba(212, 175, 55, 0.1);
+  }
+
+  .bet-button:hover {
+    transform: none;
+  }
+
+  .bet-button:active {
+    transform: scale(0.98);
+  }
+
+  /* Disable hover animations */
+  * {
+    transition-duration: 0.15s !important;
+  }
+}
+
+/* iOS specific */
+@supports (-webkit-touch-callout: none) {
+  /* Safe area insets for notch */
+  .header {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .sidebar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Fix iOS input zoom */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Smooth scrolling */
+  body,
+  .chat-messages,
+  .kodakgp-tabs {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Android specific */
+@media (max-width: 768px) {
+  /* Fix Android keyboard overlap */
+  input:focus,
+  textarea:focus {
+    scroll-margin-bottom: 100px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 812px) and (orientation: landscape) {
+  .header {
+    height: 50px;
+  }
+
+  .game-canvas {
+    min-height: 250px;
+  }
+
+  .chat-panel {
+    height: 80vh;
+  }
+}
+
+/* High DPI displays (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Sharper borders */
+  .glass-card {
+    border-width: 0.5px;
+  }
+
+  /* Crisper text */
+  body {
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+/* Dark mode support (system preference) */
+@media (prefers-color-scheme: dark) {
+  /* Already dark, but can add adjustments */
+  :root {
+    --obsidian: #000000;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .gold-coin {
+    animation: none;
+  }
+}
+
+/* Print styles (just in case) */
+@media print {
+  .sidebar,
+  .header,
+  .chat-panel {
+    display: none;
+  }
+
+  .main-content {
+    width: 100%;
+  }
+}
+
 .admin-tab:hover {
   color: #E0FF00;
 }
