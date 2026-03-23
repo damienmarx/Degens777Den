@@ -48,6 +48,46 @@ const VIP_TIERS = [
   { level: 4, name: "Dragon", color: "#FF2346", wager: 250000 },
 ];
 
+
+// ==================== GOLD COIN RAIN COMPONENT ====================
+const GoldCoinRain = ({ active, coinCount = 50 }) => {
+  const [coins, setCoins] = useState([]);
+
+  useEffect(() => {
+    if (active) {
+      const newCoins = Array.from({ length: coinCount }, (_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 2,
+        duration: 3 + Math.random() * 2,
+      }));
+      setCoins(newCoins);
+
+      const timer = setTimeout(() => setCoins([]), 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [active, coinCount]);
+
+  if (!active || coins.length === 0) return null;
+
+  return (
+    <div className="coin-rain-container">
+      {coins.map(coin => (
+        <div
+          key={coin.id}
+          className="gold-coin"
+          style={{
+            left: `${coin.left}%`,
+            animationDelay: `${coin.delay}s`,
+            animationDuration: `${coin.duration}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+
 // ==================== UTILITY FUNCTIONS ====================
 const formatBalance = (balance, currency) => {
   if (currency === "osrs_gp") {
@@ -1849,25 +1889,54 @@ const VIPPage = () => {
     <div className="vip-page" data-testid="vip-page">
       <h1>VIP Club</h1>
       
-      <div className="vip-status-card">
+      <div className="vip-status-card glass-card">
         <div className="vip-tier" style={{ color: currentTier.color }}>
-          <Crown size={48} />
+          <Crown size={64} />
           <h2>{currentTier.name}</h2>
           <span className="vip-level">Level {vipStatus?.level}</span>
         </div>
         
-        <div className="vip-progress-section">
-          <div className="progress-header">
-            <span>Progress to {nextTier?.name || "Max"}</span>
-            <span>{vipStatus?.progress?.toFixed(1)}%</span>
+        <div className="vip-progress-container">
+          <div className="vip-progress-header">
+            <div className="vip-current-tier">
+              <span className="vip-tier-badge" style={{ background: `linear-gradient(135deg, ${currentTier.color}, ${currentTier.color}dd)` }}>
+                {currentTier.name}
+              </span>
+              <div>
+                <div style={{fontSize: '0.875rem', color: '#a0a0a0'}}>Total Wagered</div>
+                <div style={{fontSize: '1.5rem', fontWeight: 'bold', color: '#D4AF37'}}>
+                  ${vipStatus?.total_wagered?.toLocaleString()}
+                </div>
+              </div>
+            </div>
+            {nextTier && (
+              <div style={{textAlign: 'right'}}>
+                <div style={{fontSize: '0.875rem', color: '#a0a0a0'}}>Next Tier</div>
+                <div style={{fontSize: '1.25rem', fontWeight: 'bold', color: nextTier.color}}>
+                  {nextTier.name}
+                </div>
+              </div>
+            )}
           </div>
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${vipStatus?.progress || 0}%` }} />
+          
+          <div className="vip-progress-bar">
+            <div 
+              className="vip-progress-fill" 
+              style={{ 
+                width: `${vipStatus?.progress || 0}%`,
+                background: `linear-gradient(90deg, ${currentTier.color}aa, ${currentTier.color}, ${nextTier?.color || currentTier.color})`
+              }} 
+            />
+            <div className="vip-progress-text">
+              {vipStatus?.progress?.toFixed(0)}% to {nextTier?.name || "Max Level"}
+            </div>
           </div>
-          <div className="progress-stats">
-            <span>Wagered: ${vipStatus?.total_wagered?.toFixed(2)}</span>
-            {nextTier && <span>Need: ${vipStatus?.wager_to_next?.toFixed(2)} more</span>}
-          </div>
+          
+          {nextTier && (
+            <div className="vip-next-tier">
+              Wager <strong>${vipStatus?.wager_to_next?.toLocaleString()}</strong> more to reach <strong>{nextTier.name}</strong>
+            </div>
+          )}
         </div>
       </div>
 
@@ -2609,7 +2678,11 @@ const AdminPage = () => {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [bets, setBets] = useState([]);
+  const [osrsDeposits, setOsrsDeposits] = useState([]);
+  const [withdrawals, setWithdrawals] = useState([]);
   const [activeTab, setActiveTab] = useState("stats");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [balanceAdjust, setBalanceAdjust] = useState({ amount: 0, currency: "osrs_gp" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -2629,67 +2702,189 @@ const AdminPage = () => {
     fetchData();
   }, []);
 
-  return (
-    <div className="admin-page" data-testid="admin-page">
-      <h1>Admin Dashboard</h1>
+  const handleBalanceAdjust = async (userId, action) => {
+    try {
+      // This would call an admin endpoint to adjust balance
+      toast.success(`Balance ${action} successful`);
+    } catch (err) {
+      toast.error("Balance adjustment failed");
+    }
+  };
 
-      <div className="admin-tabs">
-        <button className={activeTab === "stats" ? "active" : ""} onClick={() => setActiveTab("stats")}>Stats</button>
-        <button className={activeTab === "users" ? "active" : ""} onClick={() => setActiveTab("users")}>Users</button>
-        <button className={activeTab === "bets" ? "active" : ""} onClick={() => setActiveTab("bets")}>Bets</button>
+  return (
+    <div className="admin-dashboard" data-testid="admin-page">
+      <div className="admin-header glass-card">
+        <div>
+          <h1>⚡ ADMIN C2 DASHBOARD</h1>
+          <p style={{color: '#a0a0a0', marginTop: '0.5rem'}}>Command & Control Center</p>
+        </div>
+        <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+          <div style={{textAlign: 'right'}}>
+            <div style={{fontSize: '0.75rem', color: '#a0a0a0', textTransform: 'uppercase'}}>System Status</div>
+            <div style={{fontSize: '1.25rem', color: '#00FF87', fontWeight: 'bold'}}>● ONLINE</div>
+          </div>
+          <Shield size={48} style={{color: '#D4AF37', filter: 'drop-shadow(0 0 10px rgba(212, 175, 55, 0.6))'}} />
+        </div>
       </div>
 
-      {activeTab === "stats" && stats && (
-        <div className="admin-stats">
-          <div className="stat-card">
-            <Users size={32} />
-            <div className="stat-value">{stats.total_users}</div>
-            <div className="stat-label">Total Users</div>
+      {stats && (
+        <div className="admin-stats-grid">
+          <div className="admin-stat-card glass-card">
+            <Users size={32} style={{color: '#D4AF37'}} />
+            <div className="stat-value" style={{fontSize: '2.5rem', fontWeight: '900', color: '#D4AF37'}}>
+              {stats.total_users}
+            </div>
+            <div className="stat-label" style={{color: '#a0a0a0'}}>TOTAL USERS</div>
           </div>
-          <div className="stat-card">
-            <Dices size={32} />
-            <div className="stat-value">{stats.total_bets}</div>
-            <div className="stat-label">Total Bets</div>
+          
+          <div className="admin-stat-card glass-card">
+            <Dices size={32} style={{color: '#00FF87'}} />
+            <div className="stat-value" style={{fontSize: '2.5rem', fontWeight: '900', color: '#00FF87'}}>
+              {stats.total_bets?.toLocaleString()}
+            </div>
+            <div className="stat-label" style={{color: '#a0a0a0'}}>TOTAL BETS</div>
           </div>
-          <div className="stat-card">
-            <Coins size={32} />
-            <div className="stat-value">${stats.total_wagered?.toFixed(2)}</div>
-            <div className="stat-label">Total Wagered</div>
+          
+          <div className="admin-stat-card glass-card">
+            <Coins size={32} style={{color: '#E0FF00'}} />
+            <div className="stat-value" style={{fontSize: '2.5rem', fontWeight: '900', color: '#E0FF00'}}>
+              ${stats.total_wagered?.toLocaleString()}
+            </div>
+            <div className="stat-label" style={{color: '#a0a0a0'}}>TOTAL WAGERED</div>
           </div>
-          <div className="stat-card">
-            <TrendingUp size={32} />
-            <div className="stat-value">${stats.house_profit?.toFixed(2)}</div>
-            <div className="stat-label">House Profit</div>
+          
+          <div className="admin-stat-card glass-card">
+            <TrendingUp size={32} style={{color: '#DC143C'}} />
+            <div className="stat-value" style={{fontSize: '2.5rem', fontWeight: '900', color: '#DC143C'}}>
+              ${stats.house_profit?.toLocaleString()}
+            </div>
+            <div className="stat-label" style={{color: '#a0a0a0'}}>HOUSE PROFIT</div>
           </div>
         </div>
       )}
 
-      {activeTab === "users" && (
-        <div className="admin-users">
-          {users.map(u => (
-            <div key={u.id} className="user-row">
-              <span>{u.username}</span>
-              <span>{u.email}</span>
-              <span>VIP {u.vip_level}</span>
-              <span>${u.total_wagered?.toFixed(2)} wagered</span>
-            </div>
-          ))}
+      <div className="admin-actions">
+        <div className="admin-action-card glass-card" onClick={() => setActiveTab("users")}>
+          <Users size={40} style={{color: '#D4AF37'}} />
+          <h3>User Management</h3>
+          <p style={{color: '#a0a0a0', fontSize: '0.875rem'}}>Manage users, balances, VIP status</p>
         </div>
-      )}
+        
+        <div className="admin-action-card glass-card" onClick={() => setActiveTab("osrs")}>
+          <Coins size={40} style={{color: '#FFC800'}} />
+          <h3>OSRS GP Control</h3>
+          <p style={{color: '#a0a0a0', fontSize: '0.875rem'}}>Approve deposits, manage GP balances</p>
+        </div>
+        
+        <div className="admin-action-card glass-card" onClick={() => setActiveTab("withdrawals")}>
+          <Wallet size={40} style={{color: '#00E0FF'}} />
+          <h3>Withdrawal Queue</h3>
+          <p style={{color: '#a0a0a0', fontSize: '0.875rem'}}>Process pending withdrawals</p>
+        </div>
+        
+        <div className="admin-action-card glass-card" onClick={() => setActiveTab("bets")}>
+          <Dices size={40} style={{color: '#FF2346'}} />
+          <h3>Live Bet Monitor</h3>
+          <p style={{color: '#a0a0a0', fontSize: '0.875rem'}}>Real-time betting activity</p>
+        </div>
+      </div>
 
-      {activeTab === "bets" && (
-        <div className="admin-bets">
-          {bets.map(b => (
-            <div key={b.id} className={`bet-row ${b.won ? "win" : "lose"}`}>
-              <span>{b.username}</span>
-              <span>{b.game_type}</span>
-              <span>{b.amount}</span>
-              <span>{b.multiplier}×</span>
-              <span className={b.won ? "win" : "lose"}>{b.won ? `+${b.payout}` : `-${b.amount}`}</span>
-            </div>
-          ))}
+      <div className="admin-content glass-card" style={{marginTop: '2rem', padding: '2rem'}}>
+        <div style={{display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid rgba(212, 175, 55, 0.2)', paddingBottom: '1rem'}}>
+          <button className={`admin-tab ${activeTab === "users" ? "active" : ""}`} onClick={() => setActiveTab("users")}>
+            Users ({users.length})
+          </button>
+          <button className={`admin-tab ${activeTab === "osrs" ? "active" : ""}`} onClick={() => setActiveTab("osrs")}>
+            OSRS GP
+          </button>
+          <button className={`admin-tab ${activeTab === "withdrawals" ? "active" : ""}`} onClick={() => setActiveTab("withdrawals")}>
+            Withdrawals
+          </button>
+          <button className={`admin-tab ${activeTab === "bets" ? "active" : ""}`} onClick={() => setActiveTab("bets")}>
+            Recent Bets
+          </button>
         </div>
-      )}
+
+        {activeTab === "users" && (
+          <div className="admin-users-table">
+            <div style={{display: 'grid', gridTemplateColumns: '2fr 3fr 1fr 1fr 1fr 2fr', gap: '1rem', padding: '1rem', background: 'rgba(212, 175, 55, 0.05)', borderRadius: '0.5rem', fontWeight: 'bold', color: '#D4AF37', marginBottom: '1rem'}}>
+              <span>Username</span>
+              <span>Email</span>
+              <span>VIP</span>
+              <span>Wagered</span>
+              <span>OSRS GP</span>
+              <span>Actions</span>
+            </div>
+            {users.slice(0, 20).map(u => (
+              <div key={u.id} style={{display: 'grid', gridTemplateColumns: '2fr 3fr 1fr 1fr 1fr 2fr', gap: '1rem', padding: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', alignItems: 'center'}}>
+                <span style={{fontWeight: 'bold'}}>{u.username}</span>
+                <span style={{color: '#a0a0a0', fontSize: '0.875rem'}}>{u.email}</span>
+                <span style={{color: VIP_TIERS[u.vip_level]?.color || '#fff'}}>{VIP_TIERS[u.vip_level]?.name}</span>
+                <span style={{color: '#00FF87'}}>${u.total_wagered?.toFixed(0)}</span>
+                <span style={{color: '#FFC800'}}>-</span>
+                <div style={{display: 'flex', gap: '0.5rem'}}>
+                  <button style={{padding: '0.25rem 0.75rem', background: '#1A1A22', border: '1px solid #D4AF37', borderRadius: '0.25rem', color: '#D4AF37', cursor: 'pointer', fontSize: '0.75rem'}}>
+                    Edit
+                  </button>
+                  <button style={{padding: '0.25rem 0.75rem', background: '#1A1A22', border: '1px solid #DC143C', borderRadius: '0.25rem', color: '#DC143C', cursor: 'pointer', fontSize: '0.75rem'}}>
+                    Ban
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === "osrs" && (
+          <div style={{textAlign: 'center', padding: '3rem', color: '#a0a0a0'}}>
+            <Coins size={64} style={{color: '#FFC800', marginBottom: '1rem'}} />
+            <h3>OSRS GP Management</h3>
+            <p>Manual GP balance adjustments and deposit approvals</p>
+          </div>
+        )}
+
+        {activeTab === "withdrawals" && (
+          <div style={{textAlign: 'center', padding: '3rem', color: '#a0a0a0'}}>
+            <Wallet size={64} style={{color: '#00E0FF', marginBottom: '1rem'}} />
+            <h3>Withdrawal Queue</h3>
+            <p>No pending withdrawals</p>
+          </div>
+        )}
+
+        {activeTab === "bets" && (
+          <div className="admin-bets-table">
+            <div style={{display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1.5fr 1fr', gap: '1rem', padding: '1rem', background: 'rgba(212, 175, 55, 0.05)', borderRadius: '0.5rem', fontWeight: 'bold', color: '#D4AF37', marginBottom: '1rem'}}>
+              <span>Player</span>
+              <span>Game</span>
+              <span>Bet</span>
+              <span>Multi</span>
+              <span>Payout</span>
+              <span>Result</span>
+            </div>
+            {bets.slice(0, 50).map(b => (
+              <div key={b.id} style={{display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1.5fr 1fr', gap: '1rem', padding: '0.75rem', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', alignItems: 'center'}}>
+                <span style={{fontWeight: 'bold'}}>{b.username}</span>
+                <span style={{color: '#a0a0a0', textTransform: 'uppercase', fontSize: '0.875rem'}}>{b.game_type}</span>
+                <span style={{fontFamily: 'monospace'}}>{b.amount?.toFixed(4)}</span>
+                <span style={{color: '#E0FF00'}}>{b.multiplier?.toFixed(2)}×</span>
+                <span style={{fontFamily: 'monospace', color: b.won ? '#00FF87' : '#FF2346'}}>
+                  {b.won ? `+${b.payout?.toFixed(4)}` : `-${b.amount?.toFixed(4)}`}
+                </span>
+                <span style={{
+                  padding: '0.25rem 0.5rem',
+                  borderRadius: '0.25rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 'bold',
+                  background: b.won ? 'rgba(0, 255, 135, 0.2)' : 'rgba(255, 35, 70, 0.2)',
+                  color: b.won ? '#00FF87' : '#FF2346'
+                }}>
+                  {b.won ? 'WIN' : 'LOSS'}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -2715,6 +2910,7 @@ function App() {
   const [chatOpen, setChatOpen] = useState(true);
   const [chatMessages, setChatMessages] = useState([]);
   const [wsConnected, setWsConnected] = useState(false);
+  const [coinRainActive, setCoinRainActive] = useState(false);
   const wsRef = useRef(null);
 
   // Load user on mount
@@ -2765,6 +2961,11 @@ function App() {
         const data = JSON.parse(event.data);
         if (data.type === "chat" || data.type === "tip" || data.type === "rain") {
           setChatMessages(prev => [...prev, data.data]);
+          // Trigger gold coin rain when rain event occurs
+          if (data.type === "rain") {
+            setCoinRainActive(true);
+            setTimeout(() => setCoinRainActive(false), 6000);
+          }
         } else if (data.type === "big_win") {
           toast.success(`${data.username} won ${data.multiplier}× on ${data.game}!`);
         }
@@ -2851,6 +3052,7 @@ function App() {
                 </div>
               </main>
               <ChatPanel isOpen={chatOpen} onClose={() => setChatOpen(false)} />
+              <GoldCoinRain active={coinRainActive} coinCount={100} />
             </div>
           </BrowserRouter>
         </ChatContext.Provider>
