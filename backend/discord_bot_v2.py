@@ -326,319 +326,131 @@ class GamblingPsychologyCog(commands.Cog):
         """Calculate safe gambling bankroll"""
         embed = discord.Embed(
             title="💼 SAFE BANKROLL CALCULATOR",
-            description=f"Based on ${monthly_budget}/month budget",
-            color=COLORS['gold']
+            description=f"Based on ${monthly_budget}/month, your recommended limits are:",
+            color=COLORS["gold"]
         )
         
-        daily = monthly_budget / 30
-        session = daily / 3
-        bet_unit = session / 10
+        weekly_budget = monthly_budget / 4
+        daily_budget = monthly_budget / 30
         
-        embed.add_field(name="Monthly Budget", value=f"${monthly_budget:.2f}", inline=True)
-        embed.add_field(name="Daily Limit", value=f"${daily:.2f}", inline=True)
-        embed.add_field(name="Per Session", value=f"${session:.2f}", inline=True)
-        embed.add_field(name="Per Bet (Unit)", value=f"${bet_unit:.2f}", inline=True)
-        
-        embed.add_field(
-            name="📋 RECOMMENDATION",
-            value=f"""
-**Daily Limit:** ${daily:.2f}
-**Session Limit:** ${session:.2f}
-**Bet Unit:** ${bet_unit:.2f}
-
-**Rule:** Never bet more than 1 unit
-**Expected Monthly Loss:** ${monthly_budget * 0.03:.2f} (3% house edge)
-**Worst Case:** ${monthly_budget:.2f} (if you lose everything)
-            """,
-            inline=False
-        )
+        embed.add_field(name="Daily Limit", value=f"${daily_budget:.2f}", inline=True)
+        embed.add_field(name="Weekly Limit", value=f"${weekly_budget:.2f}", inline=True)
+        embed.add_field(name="Monthly Limit", value=f"${monthly_budget:.2f}", inline=True)
+        embed.set_footer(text="Remember: Gambling is entertainment, not income.")
         
         await ctx.send(embed=embed)
 
-# ==================== CLOUTSCAPE RSPS-GP COG ====================
+# ==================== APK DISTRIBUTION COG ====================
 
-class CloutscapeGPCog(commands.Cog):
-    """Cloutscape RSPS-GP Trading"""
+class APKCog(commands.Cog):
+    """Commands for APK distribution and information"""
+
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name="apk", aliases=["download", "app"])
+    async def send_apk_info(self, ctx):
+        """Provides information and download link for the Android APK"""
+        embed = discord.Embed(
+            title="📱 Degens777Den Android APK is Here!",
+            description="Experience the ultimate crypto casino directly on your Android device!",
+            color=COLORS["green"]
+        )
+        embed.add_field(
+            name="🚀 Get the App Now!",
+            value="""
+            Download the latest version of our Android APK from GitHub Actions:
+            [Download APK Here](https://github.com/damienmarx/Degens777Den/actions)
+            
+            **Important:** Click on the latest successful build, then scroll down to 'Artifacts' to find `degens777den-debug-apk`.
+            """,
+            inline=False
+        )
+        embed.add_field(
+            name="🔑 Test Account Login",
+            value="""
+            Use these credentials to log in and test all games with pre-filled balances:
+            **Email:** `test@degensden.com`
+            **Password:** `test1234`
+            
+            *(Remember to run `python3 create_test_account.py` on your server first!)*
+            """,
+            inline=False
+        )
+        embed.add_field(
+            name="🌐 Web Version",
+            value="You can also play directly in your browser: [Insert Your Web URL Here]",
+            inline=False
+        )
+        embed.set_footer(text="Enjoy seamless gaming on the go! 🎲")
+        await ctx.send(embed=embed)
+
+# ==================== CLOUTSCAPE RSPS-GP TRADING COG ====================
+
+class CloutscapeCog(commands.Cog):
+    """Cloutscape RSPS-GP Trading System"""
     
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command(name="rsps_rates")
-    async def rsps_rates(self, ctx):
-        """Show Cloutscape RSPS-GP rates"""
+    @commands.command(name="gp_rates")
+    async def gp_rates(self, ctx):
+        """Get current OSRS GP buying/selling rates"""
+        # In a real scenario, this would fetch from an API
         embed = discord.Embed(
-            title="💰 CLOUTSCAPE RSPS-GP RATES",
-            color=COLORS['gold']
+            title="💰 OSRS GP EXCHANGE RATES",
+            description="Live rates for buying and selling Old School RuneScape Gold",
+            color=COLORS["gold"]
         )
-        
-        embed.add_field(name="BUY RATE", value="**$0.19 per 1M GP**", inline=True)
-        embed.add_field(name="SELL RATE", value="**$0.21 per 1M GP**", inline=True)
-        embed.add_field(name="SPREAD", value="**2¢ per million**", inline=True)
-        
-        embed.add_field(
-            name="📊 EXAMPLE TRADES",
-            value="""
-**Buy 100M GP:**
-100M × $0.19 = $19.00
-
-**Sell 100M GP:**
-100M × $0.21 = $21.00
-
-**Profit Spread:**
-$21.00 - $19.00 = $2.00 per 100M
-            """,
-            inline=False
-        )
-        
-        embed.add_field(
-            name="⚠️ IMPORTANT DISCLAIMER",
-            value="""
-**NOT AFFILIATED WITH JAGEX OR OFFICIAL RUNESCAPE**
-
-This is Cloutscape RSPS-GP only:
-• Cloutscape is a private server
-• NOT official OSRS/RuneScape gold
-• NOT affiliated with Jagex Ltd
-• NOT tradeable on official OSRS
-• For entertainment purposes only
-
-**By trading, you acknowledge:**
-✓ You understand this is private server currency
-✓ You accept all risks
-✓ You will not hold Degens777Den liable
-✓ This is not real OSRS gold
-            """,
-            inline=False
-        )
-        
-        embed.add_field(
-            name="🔄 HOW TO TRADE",
-            value="""
-**DEPOSIT CLOUTSCAPE GP:**
-1. Go to https://cloutscape.org/deposit
-2. Select "Cloutscape RSPS-GP"
-3. Enter amount
-4. Follow in-game instructions
-5. GP appears in your wallet
-
-**WITHDRAW TO CLOUTSCAPE:**
-1. Go to https://cloutscape.org/withdraw
-2. Select "Cloutscape RSPS-GP"
-3. Enter amount
-4. Confirm transaction
-5. GP sent to your account
-
-**PROCESSING TIME:** 5-30 minutes
-            """,
-            inline=False
-        )
-        
-        await ctx.send(embed=embed)
-    
-    @commands.command(name="gp_converter")
-    async def gp_converter(self, ctx, amount: float, direction: str = "buy"):
-        """Convert between USD and Cloutscape RSPS-GP"""
-        buy_rate = 0.19
-        sell_rate = 0.21
-        
-        embed = discord.Embed(
-            title="💱 CLOUTSCAPE RSPS-GP CONVERTER",
-            color=COLORS['gold']
-        )
-        
-        if direction.lower() in ["buy", "b"]:
-            gp = amount / buy_rate
-            embed.add_field(name="You Pay (USD)", value=f"${amount:.2f}", inline=True)
-            embed.add_field(name="You Get (GP)", value=f"{gp:,.0f}M", inline=True)
-            embed.add_field(name="Rate", value=f"${buy_rate}/M", inline=True)
-        else:
-            usd = amount * sell_rate
-            embed.add_field(name="You Sell (GP)", value=f"{amount:,.0f}M", inline=True)
-            embed.add_field(name="You Get (USD)", value=f"${usd:.2f}", inline=True)
-            embed.add_field(name="Rate", value=f"${sell_rate}/M", inline=True)
-        
-        embed.add_field(
-            name="⚠️ DISCLAIMER",
-            value="Cloutscape RSPS-GP only. NOT official OSRS. For entertainment.",
-            inline=False
-        )
-        
+        embed.add_field(name="BUY GP", value="$0.35 / M", inline=True)
+        embed.add_field(name="SELL GP", value="$0.30 / M", inline=True)
+        embed.set_footer(text="Rates update every 5 minutes. Contact an admin to trade.")
         await ctx.send(embed=embed)
 
-# ==================== MAIN BOT COG ====================
-
-class MainBotCog(commands.Cog):
-    """Main bot functionality"""
-    
-    def __init__(self, bot):
-        self.bot = bot
-    
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"╔═══════════════════════════════════════════════════════╗")
-        print(f"║  🐺 DEGENS777DEN BOT v2 ONLINE 🐺                   ║")
-        print(f"╚═══════════════════════════════════════════════════════╝")
-        print(f"Bot: {self.bot.user.name} (ID: {self.bot.user.id})")
-        print(f"Servers: {len(self.bot.guilds)}")
-        
-        try:
-            synced = await self.bot.tree.sync()
-            print(f"✅ Synced {len(synced)} slash commands")
-        except Exception as e:
-            print(f"❌ Failed to sync: {e}")
-        
-        await self.bot.change_presence(
-            activity=discord.Game(name="🎰 cloutscape.org | !help"),
-            status=discord.Status.online
-        )
-    
-    @commands.command(name="help")
-    async def help_cmd(self, ctx):
-        """Show all bot commands"""
+    @commands.command(name="trade_gp")
+    async def trade_gp(self, ctx, amount_gp: str, trade_type: str):
+        """Initiate an OSRS GP trade (e.g., !trade_gp 100m buy)"""
         embed = discord.Embed(
-            title="🐺 DEGENS777DEN BOT v2 - COMMANDS",
-            description="Professional, modular, and responsible",
-            color=COLORS['gold']
+            title="🤝 OSRS GP TRADE INITIATED",
+            description=f"You want to {trade_type.lower()} {amount_gp} GP.",
+            color=COLORS["gold"]
         )
-        
-        embed.add_field(
-            name="🔐 PROVABLY FAIR",
-            value="""
-`!provably_fair` - Explain our fairness system
-`!verify_game <id> <seed>` - Verify a game result
-            """,
-            inline=False
-        )
-        
-        embed.add_field(
-            name="🧠 GAMBLING PSYCHOLOGY",
-            value="""
-`!degen_mindset` - Understand degen psychology
-`!bankroll <budget>` - Calculate safe limits
-            """,
-            inline=False
-        )
-        
-        embed.add_field(
-            name="💰 CLOUTSCAPE RSPS-GP",
-            value="""
-`!rsps_rates` - Current buy/sell rates
-`!gp_converter <amount> [buy/sell]` - Convert USD ↔ GP
-            """,
-            inline=False
-        )
-        
-        embed.add_field(
-            name="📊 CASINO INFO",
-            value="""
-`!stats` - Casino statistics
-`!games` - Available games
-            """,
-            inline=False
-        )
-        
-        await ctx.send(embed=embed)
-    
-    @commands.command(name="stats")
-    async def stats_cmd(self, ctx):
-        """Show casino statistics"""
-        embed = discord.Embed(
-            title="🎰 DEGENS777DEN STATISTICS",
-            color=COLORS['gold']
-        )
-        
-        embed.add_field(name="👥 Active Players", value="1,337", inline=True)
-        embed.add_field(name="🎲 Total Bets", value="420,690", inline=True)
-        embed.add_field(name="💵 Total Wagered", value="$2.1M", inline=True)
-        embed.add_field(name="📈 RTP", value="97%", inline=True)
-        embed.add_field(name="✅ Verified Fair", value="100%", inline=True)
-        embed.add_field(name="🔒 Secure", value="Military Grade", inline=True)
-        
-        embed.add_field(
-            name="🎮 POPULAR GAMES",
-            value="""
-1. **Dice** - 49% win rate, instant results
-2. **Keno** - Pick 1-40 numbers, 20 drawn
-3. **Crash** - Multiplier game, cash out anytime
-            """,
-            inline=False
-        )
-        
-        await ctx.send(embed=embed)
-    
-    @commands.command(name="games")
-    async def games_cmd(self, ctx):
-        """Show available games"""
-        embed = discord.Embed(
-            title="🎮 AVAILABLE GAMES",
-            color=COLORS['cyan']
-        )
-        
-        embed.add_field(
-            name="🎲 DICE",
-            value="""
-**How it works:** Pick a target number (0-100), choose over/under
-**Win Chance:** 49%
-**Strategy:** Lower odds = higher win chance
-**Min Bet:** $0.01 | **Max Bet:** $1,000
-            """,
-            inline=False
-        )
-        
-        embed.add_field(
-            name="🎰 KENO",
-            value="""
-**How it works:** Pick 1-40 numbers, 20 numbers drawn
-**Payouts:** 1-10 matches = various payouts
-**Strategy:** More picks = higher variance
-**Min Bet:** $0.01 | **Max Bet:** $500
-**Quick Pick:** Random selection available
-            """,
-            inline=False
-        )
-        
-        embed.add_field(
-            name="🚀 CRASH",
-            value="""
-**How it works:** Multiplier climbs, cash out before crash
-**Win Chance:** Depends on your target
-**Strategy:** Higher target = higher risk
-**Min Bet:** $0.01 | **Max Bet:** $1,000
-**Auto Cashout:** Set target and let it ride
-            """,
-            inline=False
-        )
-        
-        embed.add_field(
-            name="🎁 WELCOME BONUS",
-            value="$5 USD or 35M Cloutscape RSPS-GP",
-            inline=False
-        )
-        
+        embed.add_field(name="Next Steps", value="Please open a support ticket or DM an online admin to complete your trade.", inline=False)
+        embed.set_footer(text="All trades are manually verified for security.")
         await ctx.send(embed=embed)
 
-# ==================== BOT SETUP ====================
-
-async def load_cogs():
-    """Load all cogs"""
-    await bot.add_cog(MainBotCog(bot))
-    await bot.add_cog(ProvablyFairCog(bot))
-    await bot.add_cog(GamblingPsychologyCog(bot))
-    await bot.add_cog(CloutscapeGPCog(bot))
-    print("✅ All cogs loaded")
+# ==================== BOT EVENTS ====================
 
 @bot.event
 async def on_ready():
-    """Bot ready event"""
-    pass  # Handled by MainBotCog
-
-if __name__ == "__main__":
-    if not BOT_TOKEN:
-        print("❌ DISCORD_BOT_TOKEN not set!")
-        exit(1)
+    print(f"Logged in as {bot.user.name} ({bot.user.id})")
+    print("------")
+    if GUILD_ID:
+        guild = bot.get_guild(GUILD_ID)
+        if guild:
+            print(f"Monitoring guild: {guild.name} ({guild.id})")
+        else:
+            print(f"Warning: Guild with ID {GUILD_ID} not found.")
+    else:
+        print("Warning: DISCORD_GUILD_ID not set in .env. Some features may not work.")
     
     # Load cogs
-    asyncio.run(load_cogs())
-    
-    # Run bot
+    await bot.add_cog(ProvablyFairCog(bot))
+    await bot.add_cog(GamblingPsychologyCog(bot))
+    await bot.add_cog(CloutscapeCog(bot))
+    await bot.add_cog(APKCog(bot))
+    print("Cogs loaded.")
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("Sorry, that command doesn't exist. Type `!help` for a list of commands.")
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"Missing argument: {error.param}. Please check `!help {ctx.command.name}`.")
+    else:
+        print(f"Ignoring exception in command {ctx.command}:", error)
+        await ctx.send("An unexpected error occurred. Please try again later.")
+
+# Run the bot
+if __name__ == "__main__":
     bot.run(BOT_TOKEN)
