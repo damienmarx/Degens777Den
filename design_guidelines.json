@@ -1,0 +1,133 @@
+{
+  "theme_strategy": "Exclusive Dark Mode. Archetype 7 (Electric & Neon) mixed with Archetype 5 (Jewel & Luxury). The aesthetic is 'Underground Degen VIP'—provocative, high-tension, transparent, and premium. Avoid cheap generic casino templates; rely on brutalist geometry, toxic neon accents against void-like blacks, and heavy typography.",
+  "colors": {
+    "backgrounds": {
+      "void": "#050505",
+      "surface": "#121214",
+      "surface_elevated": "#1A1A22",
+      "surface_glass": "rgba(18, 18, 20, 0.7)"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "muted": "#52525B"
+    },
+    "accents": {
+      "primary": "#E0FF00",
+      "primary_hover": "#D1ED00",
+      "win": "#00FFA3",
+      "loss": "#FF2346",
+      "osrs_gold": "#FFC800",
+      "crypto_blue": "#00E0FF"
+    },
+    "borders": {
+      "subtle": "rgba(255, 255, 255, 0.08)",
+      "focus": "#E0FF00"
+    }
+  },
+  "typography": {
+    "headings": {
+      "family": "'Anton', sans-serif",
+      "description": "Massive, compressed, and tension-building. Used for game multipliers, balances, and massive titles.",
+      "tracking": "tracking-normal",
+      "transform": "uppercase"
+    },
+    "body": {
+      "family": "'Outfit', sans-serif",
+      "description": "Clean, technical, readable for chat and general UI."
+    },
+    "mono": {
+      "family": "'JetBrains Mono', monospace",
+      "description": "CRITICAL for Provably Fair hashes, crypto addresses, and precise bet amounts."
+    }
+  },
+  "layouts": {
+    "global": {
+      "structure": "Sidebar (Navigation) + Main Content (Game Area) + Right Sidebar (Live Chat).",
+      "spacing": "Dense where data matters (Provably Fair, Chat), generous where tension matters (Game Canvas)."
+    },
+    "game_canvas": {
+      "container": "relative w-full h-[600px] bg-[#121214] border border-white/10 rounded-xl overflow-hidden shadow-2xl flex items-center justify-center",
+      "controls": "bg-[#050505] p-6 border-t border-white/10 grid grid-cols-1 md:grid-cols-3 gap-6"
+    },
+    "grids": {
+      "bento_marketing": "grid grid-cols-1 md:grid-cols-12 gap-6",
+      "keno_board": "grid grid-cols-8 gap-2 w-full max-w-lg mx-auto"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#E0FF00] text-black font-bold uppercase tracking-wide rounded-md px-8 py-4 hover:bg-[#D1ED00] transition-colors shadow-[0_0_15px_rgba(224,255,0,0.3)]",
+      "secondary": "bg-[#1A1A22] text-white border border-white/10 rounded-md px-6 py-3 hover:border-white/30 transition-colors",
+      "bet": "bg-[#00FFA3] text-black font-black uppercase rounded-lg py-5 text-xl shadow-[0_0_20px_rgba(0,255,163,0.4)] hover:scale-[1.02] transition-transform"
+    },
+    "inputs": {
+      "crypto": "bg-[#050505] border border-white/10 rounded-md px-4 py-3 text-white font-mono focus:border-[#E0FF00] focus:ring-1 focus:ring-[#E0FF00] outline-none"
+    },
+    "chat": {
+      "message": "flex items-start gap-3 p-2 hover:bg-white/5 rounded-md transition-colors",
+      "rain_alert": "bg-[#E0FF00]/10 border border-[#E0FF00] text-[#E0FF00] p-3 rounded-md animate-pulse"
+    },
+    "provably_fair": {
+      "hash_box": "bg-black/50 border border-white/5 p-4 rounded text-xs font-mono text-gray-400 break-all"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "Use backdrop-blur-xl with backdrop-saturate-150 for headers and floating modals. Never use pure transparent backgrounds without blur.",
+    "borders": "1px inner glow using box-shadow or border-white/10 to separate dark elements.",
+    "textures": "Subtle noise overlay on the main background to prevent the 'digital flatness' of pure black.",
+    "glows": "Use soft drop-shadows on active elements (e.g., drop-shadow-[0_0_8px_rgba(224,255,0,0.5)])."
+  },
+  "motion": {
+    "hover": "Scale up slightly (scale-105) for game tiles, brighten borders.",
+    "crash_game": "Rocket must have a slight continuous shake (translate/rotate). On crash, screen shake animation and turn canvas border/accents to #FF2346.",
+    "wheel_spin": "Cubic-bezier(0.25, 1, 0.5, 1) for realistic deceleration of the Lucky Wheel.",
+    "toast": "Slide in from top-right, smooth ease-out."
+  },
+  "accessibility": {
+    "contrast": "Ensure all text against dark backgrounds passes minimum 4.5:1 ratio. Green/Red text must be neon/bright enough to read against #050505.",
+    "focus": "All interactive elements must have a high-contrast focus ring (focus:ring-2 focus:ring-[#E0FF00]).",
+    "motion": "Respect prefers-reduced-motion for the crash screen shake."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "url": "https://images.pexels.com/photos/1111597/pexels-photo-1111597.jpeg",
+        "description": "Close-up of hand tossing red dice against a dark background",
+        "category": "Hero Background / Dice Game Banner"
+      },
+      {
+        "url": "https://images.pexels.com/photos/7726313/pexels-photo-7726313.jpeg",
+        "description": "Stunning close-up of a grey wolf",
+        "category": "Crash Game Mascot / VIP Profile Background"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1749492795606-99fbf3fbf113",
+        "description": "Hand holding a gold bitcoin",
+        "category": "Wallet / Deposit Banner"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1745473383212-59428c1156bc",
+        "description": "Casino entrance glowing with red neon lights",
+        "category": "Landing Page Marketing Hero Background"
+      }
+    ],
+    "icons": {
+      "library": "@phosphor-icons/react",
+      "instruction": "Use Phosphor Icons (Duotone or Bold) for premium look. Use generic shapes to construct the 'Goat Head' or 'Wolf Rocket' if custom SVGs are not available, or combine standard icons creatively (e.g., Rocket + Flame)."
+    }
+  },
+  "general_ui_ux_guidelines": "1. Tension & Adrenaline: The UI should feel like a high-stakes environment. Numbers should tick up rapidly. 2. Transparency: Provably fair hashes must always be visible or 1-click away. 3. Community: The chat must feel alive; use marquees or bold alerts for 'Rain' and large bets. 4. Never use generic 'success' green for money; use our toxic #E0FF00 or #00FFA3.",
+  "instructions_to_main_agent": [
+    "Build standard React (.js or .jsx) files. Do NOT use TypeScript (.tsx).",
+    "Install and use 'lucide-react' or '@phosphor-icons/react'.",
+    "Implement games using standard React state and hooks. Mock the game logic but make the UI robust (e.g., Keno array selection, Crash multiplier intervals).",
+    "For the Crash game 'Wolf Rocket', if you cannot generate a custom SVG, use an aggressive stylized icon (like Phosphor's Rocket) combined with flame trails and colored red/yellow.",
+    "For the Lucky Wheel 'Goat Head', use a stylized geometric center for the wheel.",
+    "Ensure the wallet modal allows toggling between Crypto (BTC, ETH, LTC, USDC) and OSRS GP (with a Runescape-style gold coin icon).",
+    "Add 'data-testid' attributes to all interactive elements (e.g., data-testid='bet-button', data-testid='keno-cell-1').",
+    "Use framer-motion for smooth game animations (Crash graph, Wheel rotation, Plinko drops).",
+    "For the VIP system, display a sleek progress bar with current tier (e.g., Bronze, Silver, Gold, OSRS-Dragon) and Rakeback/Lossback stats."
+  ],
+  "universal_guidelines_for_main_agent": "Do not center align app containers (.App { text-align: center }). Avoid generic centered layouts and uniform styling. Create depth using z-index and glassmorphism. Add micro-animations (hover, active states) to every button. DO NOT use emojis for icons. DO NOT use complete transparent backgrounds for overlays. ALWAYS use 'sonner' for toasts. Export components using named exports and pages using default exports."
+}
