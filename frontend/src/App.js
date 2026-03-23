@@ -125,6 +125,10 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             <Crown className="nav-icon" />
             {!collapsed && <span>VIP Club</span>}
           </Link>
+          <Link to="/kodakgp" className={`nav-item ${location.pathname === "/kodakgp" ? "active" : ""}`} data-testid="nav-kodakgp">
+            <Coins className="nav-icon" />
+            {!collapsed && <span>KodakGP Store</span>}
+          </Link>
           <Link to="/provably-fair" className={`nav-item ${location.pathname === "/provably-fair" ? "active" : ""}`} data-testid="nav-fair">
             <Shield className="nav-icon" />
             {!collapsed && <span>Provably Fair</span>}
@@ -2143,6 +2147,347 @@ const LeaderboardPage = () => {
   );
 };
 
+
+// ==================== KODAKGP PAGE ====================
+const KodakGPPage = () => {
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("buy");
+  const [rates, setRates] = useState(null);
+  const [buyAmount, setBuyAmount] = useState(100);
+  const [sellAmount, setSellAmount] = useState(100);
+  const [contactInfo, setContactInfo] = useState("");
+  const [serviceType, setServiceType] = useState("");
+  const [serviceDetails, setServiceDetails] = useState("");
+  const [serviceBudget, setServiceBudget] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [myOrders, setMyOrders] = useState([]);
+
+  useEffect(() => {
+    api.get("/kodakgp/rates").then(res => setRates(res.data)).catch(console.error);
+    if (user) {
+      api.get("/kodakgp/orders").then(res => setMyOrders(res.data)).catch(console.error);
+    }
+  }, [user]);
+
+  const handleBuyOrder = async () => {
+    if (!contactInfo) {
+      toast.error("Please provide contact information (Discord or Email)");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await api.post("/kodakgp/order", {
+        order_type: "buy",
+        amount_gp: buyAmount * 1000000,
+        payment_method: "crypto",
+        contact_info: contactInfo
+      });
+      toast.success(res.data.message);
+      setContactInfo("");
+      // Refresh orders
+      const ordersRes = await api.get("/kodakgp/orders");
+      setMyOrders(ordersRes.data);
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Order failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSellOrder = async () => {
+    if (!contactInfo) {
+      toast.error("Please provide contact information (Discord or Email)");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await api.post("/kodakgp/order", {
+        order_type: "sell",
+        amount_gp: sellAmount * 1000000,
+        payment_method: "crypto",
+        contact_info: contactInfo
+      });
+      toast.success(res.data.message);
+      setContactInfo("");
+      const ordersRes = await api.get("/kodakgp/orders");
+      setMyOrders(ordersRes.data);
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Order failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleServiceRequest = async () => {
+    if (!serviceType || !serviceDetails) {
+      toast.error("Please fill in all service details");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await api.post("/kodakgp/service", {
+        service_type: serviceType,
+        details: serviceDetails,
+        budget: serviceBudget
+      });
+      toast.success(res.data.message);
+      setServiceType("");
+      setServiceDetails("");
+      setServiceBudget(0);
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Request failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!user) {
+    return (
+      <div className="kodakgp-page" data-testid="kodakgp-page">
+        <div className="login-prompt">
+          <Coins size={64} />
+          <h2>Login to Access KodakGP</h2>
+          <p>Buy OSRS gold, sell gold, and access premium services</p>
+          <Link to="/login" className="login-btn">Login</Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="kodakgp-page" data-testid="kodakgp-page">
+      <div className="kodakgp-header">
+        <div className="header-content">
+          <Coins size={48} className="kodakgp-icon" />
+          <div>
+            <h1>KodakGP - OSRS Gold & Services</h1>
+            <p>Trusted OSRS gold provider for Degen's Den</p>
+          </div>
+        </div>
+        {rates && (
+          <div className="rates-display">
+            <div className="rate-box">
+              <span className="rate-label">Buy Rate</span>
+              <span className="rate-value">${rates.buy_rate}/M</span>
+            </div>
+            <div className="rate-box">
+              <span className="rate-label">Sell Rate</span>
+              <span className="rate-value">${rates.sell_rate}/M</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="kodakgp-tabs">
+        <button className={activeTab === "buy" ? "active" : ""} onClick={() => setActiveTab("buy")} data-testid="tab-buy">
+          Buy Gold
+        </button>
+        <button className={activeTab === "sell" ? "active" : ""} onClick={() => setActiveTab("sell")} data-testid="tab-sell">
+          Sell Gold
+        </button>
+        <button className={activeTab === "services" ? "active" : ""} onClick={() => setActiveTab("services")} data-testid="tab-services">
+          Services
+        </button>
+        <button className={activeTab === "orders" ? "active" : ""} onClick={() => setActiveTab("orders")} data-testid="tab-orders">
+          My Orders
+        </button>
+      </div>
+
+      <div className="kodakgp-content">
+        {activeTab === "buy" && (
+          <div className="buy-section">
+            <h2>Buy OSRS Gold</h2>
+            <p className="section-desc">Purchase OSRS GP and get it added to your casino balance</p>
+            
+            <div className="amount-selector">
+              <label>Amount (in millions)</label>
+              <input
+                type="range"
+                min={rates?.min_buy || 10}
+                max={rates?.max_buy || 5000}
+                step="10"
+                value={buyAmount}
+                onChange={e => setBuyAmount(parseInt(e.target.value))}
+                data-testid="buy-amount-slider"
+              />
+              <div className="amount-display">
+                <span className="amount-value">{buyAmount}M GP</span>
+                <span className="amount-usd">${(buyAmount * (rates?.buy_rate || 0.45)).toFixed(2)} USD</span>
+              </div>
+              <div className="amount-presets">
+                {[100, 250, 500, 1000, 2500, 5000].map(val => (
+                  <button key={val} onClick={() => setBuyAmount(val)} className={buyAmount === val ? "active" : ""}>
+                    {val}M
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="input-group">
+              <label>Contact Info (Discord or Email)</label>
+              <input
+                type="text"
+                value={contactInfo}
+                onChange={e => setContactInfo(e.target.value)}
+                placeholder="your-discord#1234 or email@example.com"
+                data-testid="contact-info"
+              />
+            </div>
+
+            <div className="info-box">
+              <h4>How it works:</h4>
+              <ol>
+                <li>Place your order with payment details</li>
+                <li>KodakGP will contact you within 5-15 minutes</li>
+                <li>Complete payment (Crypto/PayPal)</li>
+                <li>GP is added to your casino balance</li>
+              </ol>
+            </div>
+
+            <button onClick={handleBuyOrder} disabled={loading} className="order-btn" data-testid="place-buy-order">
+              {loading ? "Placing Order..." : `Buy ${buyAmount}M GP`}
+            </button>
+          </div>
+        )}
+
+        {activeTab === "sell" && (
+          <div className="sell-section">
+            <h2>Sell OSRS Gold</h2>
+            <p className="section-desc">Sell your OSRS GP for crypto or PayPal</p>
+            
+            <div className="amount-selector">
+              <label>Amount (in millions)</label>
+              <input
+                type="range"
+                min={rates?.min_sell || 50}
+                max="10000"
+                step="10"
+                value={sellAmount}
+                onChange={e => setSellAmount(parseInt(e.target.value))}
+                data-testid="sell-amount-slider"
+              />
+              <div className="amount-display">
+                <span className="amount-value">{sellAmount}M GP</span>
+                <span className="amount-usd">${(sellAmount * (rates?.sell_rate || 0.50)).toFixed(2)} USD</span>
+              </div>
+            </div>
+
+            <div className="input-group">
+              <label>Contact Info (Discord or Email)</label>
+              <input
+                type="text"
+                value={contactInfo}
+                onChange={e => setContactInfo(e.target.value)}
+                placeholder="your-discord#1234 or email@example.com"
+                data-testid="contact-info-sell"
+              />
+            </div>
+
+            <div className="info-box">
+              <h4>Selling Process:</h4>
+              <ol>
+                <li>Place your sell order</li>
+                <li>KodakGP will contact you with RSN</li>
+                <li>Trade GP in-game</li>
+                <li>Receive payment within 24 hours</li>
+              </ol>
+            </div>
+
+            <button onClick={handleSellOrder} disabled={loading} className="order-btn" data-testid="place-sell-order">
+              {loading ? "Placing Order..." : `Sell ${sellAmount}M GP`}
+            </button>
+          </div>
+        )}
+
+        {activeTab === "services" && (
+          <div className="services-section">
+            <h2>OSRS Services</h2>
+            <p className="section-desc">Professional OSRS services from KodakGP</p>
+            
+            {rates?.services && (
+              <div className="services-list">
+                {rates.services.map((service, i) => (
+                  <div key={i} className="service-item">
+                    <Shield size={20} />
+                    <span>{service}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="service-request-form">
+              <div className="input-group">
+                <label>Service Type</label>
+                <select value={serviceType} onChange={e => setServiceType(e.target.value)} data-testid="service-type">
+                  <option value="">Select a service</option>
+                  <option value="pure_account">Pure Account</option>
+                  <option value="quests">Quest Services</option>
+                  <option value="leveling">Power Leveling</option>
+                  <option value="fire_cape">Fire Cape</option>
+                  <option value="infernal">Infernal Cape</option>
+                  <option value="diary">Diary Completion</option>
+                  <option value="swap">Gold Swapping (RS3 ⇄ OSRS)</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label>Details</label>
+                <textarea
+                  value={serviceDetails}
+                  onChange={e => setServiceDetails(e.target.value)}
+                  placeholder="Describe what you need... (e.g., 1 Def Pure, 75 Attack, 99 Strength, RFD completed)"
+                  rows={4}
+                  data-testid="service-details"
+                />
+              </div>
+
+              <div className="input-group">
+                <label>Budget (USD) - Optional</label>
+                <input
+                  type="number"
+                  value={serviceBudget}
+                  onChange={e => setServiceBudget(parseFloat(e.target.value))}
+                  placeholder="Enter your budget"
+                  data-testid="service-budget"
+                />
+              </div>
+
+              <button onClick={handleServiceRequest} disabled={loading} className="request-btn" data-testid="request-service">
+                {loading ? "Submitting..." : "Request Quote"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "orders" && (
+          <div className="orders-section">
+            <h2>My Orders</h2>
+            {myOrders.length === 0 ? (
+              <p className="no-orders">No orders yet</p>
+            ) : (
+              <div className="orders-list">
+                {myOrders.map(order => (
+                  <div key={order.id} className={`order-item ${order.status}`}>
+                    <div className="order-header">
+                      <span className="order-type">{order.order_type.toUpperCase()}</span>
+                      <span className={`order-status ${order.status}`}>{order.status}</span>
+                    </div>
+                    <div className="order-details">
+                      <span>Amount: {(order.amount_gp / 1000000).toFixed(0)}M GP</span>
+                      <span>Created: {new Date(order.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // ==================== HOME PAGE ====================
 const HomePage = () => {
   const { user } = useAuth();
@@ -2500,6 +2845,7 @@ function App() {
                     <Route path="/vip" element={<ProtectedRoute><VIPPage /></ProtectedRoute>} />
                     <Route path="/provably-fair" element={<ProvablyFairPage />} />
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
+                    <Route path="/kodakgp" element={<ProtectedRoute><KodakGPPage /></ProtectedRoute>} />
                     <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>} />
                   </Routes>
                 </div>
