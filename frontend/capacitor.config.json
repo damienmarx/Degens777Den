@@ -1,5 +1,23 @@
 {
   "appId": "com.degens777den.casino",
   "appName": "Degens777Den",
-  "webDir": "build"
+  "webDir": "build",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true,
+    "allowNavigation": [
+      "*",
+      "*.kodakclout-prod.workers.dev",
+      "localhost",
+      "127.0.0.1"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
 }
